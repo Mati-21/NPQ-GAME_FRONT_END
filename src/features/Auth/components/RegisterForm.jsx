@@ -14,7 +14,7 @@ function RegisterForm() {
         <Input label="Email:" placeholder="Please Insert Your Email" />
         <Input label="Username:" placeholder="Please Insert Your Username" />
         <div className="flex gap-2">
-          <Input label="Password:" placeholder="Please Insert Your Name" />
+          <Input label="Password:" placeholder="Please Insert Your Password" />
           <Input
             label="Confirm Password:"
             placeholder="Please confirm Your Password"
