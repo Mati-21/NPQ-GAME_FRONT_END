@@ -1,1 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+
 @import "tailwindcss";
+
+@theme {
+  --color-purple-primary: #160087;
+  --color-purple-secondary: #021c80;
+
+  --font-lobster: "Lobster", cursive;
+}
