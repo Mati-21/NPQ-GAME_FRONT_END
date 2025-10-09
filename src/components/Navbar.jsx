@@ -6,7 +6,7 @@ function Navbar() {
   const { pathname } = location;
 
   return (
-    <div className="w-screen px-20 text-white bg-purple-secondary shadow-xl p-3 ">
+    <div className="w-screen px-20 text-white bg-purple-secondary shadow-2xl p-3 ">
       {/* container */}
       <div className="flex justify-between">
         {/* logo */}
