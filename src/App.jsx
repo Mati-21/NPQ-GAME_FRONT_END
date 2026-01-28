@@ -5,15 +5,67 @@ import Register from "./pages/Register";
 import Notfound from "./pages/Notfound";
 import Navbar from "./components/Navbar";
 
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
+import Home from "./pages/HOME_PAGE/Home";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { connectSocket, disconnectSocket } from "./utils/socket";
+
 function App() {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  console.log(isAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      connectSocket();
+    } else {
+      disconnectSocket();
+    }
+  }, [isAuthenticated]);
+
   return (
-    <div className="h-screen bg-purple-primary flex flex-col">
+    <div className="h-screen bg-white-background flex flex-col">
       <BrowserRouter>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* Public routes */}
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <Landing />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+
+          {/* Protected routes */}
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Catch all */}
           <Route path="*" element={<Notfound />} />
         </Routes>
       </BrowserRouter>

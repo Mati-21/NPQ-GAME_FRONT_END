@@ -1,10 +1,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 @import "tailwindcss";
 
-@theme {
+:root {
+  /* Colors */
   --color-purple-primary: #160087;
   --color-purple-secondary: #021c80;
+  --color-white-background: #f5f6f7;
+
+  /* Fonts */
+  --font-lobster: "Lobster", cursive;
+  --font-inter: "Inter", sans-serif;
+
+  /* Shadows */
+  --shadow-soft-purple: 0 4px 15px rgba(22, 0, 135, 0.3);
+  --shadow-deep-purple: 0 10px 25px rgba(2, 28, 128, 0.4);
+  --shadow-neon-purple:
+    0 0 10px rgba(160, 50, 255, 0.6), 0 0 20px rgba(160, 50, 255, 0.4);
+  --shadow-card: 0 5px 15px rgba(0, 0, 0, 0.1), 0 0 10px rgba(22, 0, 135, 0.2);
+  --shadow-all: 0 0 15px 3px rgba(0, 0, 0, 0.1);
+}
+
+@theme {
+  /* Your colors, fonts, etc. can stay here too */
+  /* --color-purple-primary: #160087;
+  --color-purple-secondary: #021c80;
+  --color-white-background: #f5f6f7;
 
   --font-lobster: "Lobster", cursive;
+  --font-inter: "Inter", sans-serif; */
+
+  /* Now define shadows properly in the theme */
+  --shadow-soft-purple: 0 4px 15px rgba(22, 0, 135, 0.3);
+  --shadow-deep-purple: 0 10px 25px rgba(2, 28, 128, 0.4);
+  --shadow-neon-purple:
+    0 0 10px rgba(160, 50, 255, 0.6), 0 0 20px rgba(160, 50, 255, 0.4);
+  --shadow-card: 0 5px 15px rgba(0, 0, 0, 0.1), 0 0 10px rgba(22, 0, 135, 0.2);
+
+  /* This one will now generate shadow-all utility */
+  --shadow-all: 0 0 5px 3px rgba(0, 0, 0, 0.1);
 }

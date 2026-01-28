@@ -6,7 +6,7 @@ function Landing() {
       {/* Container */}
       <div className="h-[80%] w-[70%] flex justify-between">
         {/* left Side text */}
-        <div className="text-white flex-1 ">
+        <div className="text-black flex-1 ">
           <div className="max-w-md flex flex-col gap-4">
             <h1 className=" font-lobster text-6xl ">
               Turn Math Into a Problem-Solving Adventure
@@ -22,14 +22,14 @@ function Landing() {
             </p>
             <Link
               to="/register"
-              className="px-8 py-1 text-black inline-block mt-2 bg-green-300 rounded-full self-start"
+              className="px-8 shadow-md py-2 font-bold text-black inline-block mt-2 bg-purple-secondary rounded-full self-start "
             >
               Join Us
             </Link>
           </div>
         </div>
         {/* Image side */}
-        <div className=" flex-1 flex justify-center">
+        <div className=" flex-1 flex justify-center ">
           <img src="brain.png" alt="" className="h-[400px]" />
         </div>
       </div>
