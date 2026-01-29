@@ -64,9 +64,12 @@ function Navbar() {
             // LOGGED IN
             <div className="flex items-center gap-4">
               {/* Avatar */}
-              <div className="w-10 h-10 rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold">
+              <Link
+                to="/profile"
+                className="w-10 h-10 rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold"
+              >
                 {user.name ? user.name[0].toUpperCase() : "U"}
-              </div>
+              </Link>
               <div className="flex flex-col gap-0 text-black">
                 <span className="font-medium">{user.email}</span>
                 <span className="text-xs">{user.username}</span>

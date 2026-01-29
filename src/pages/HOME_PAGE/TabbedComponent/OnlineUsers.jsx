@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import { getSocket } from "../../../utils/socket";
 import { useOnlineUsers } from "../../../hooks/useOnlineUsers";
 import { useQueryClient } from "@tanstack/react-query";
+import { excludeUserById } from "../../../utils/OtherUsers";
+import { useSelector } from "react-redux";
 
 const OnlineUsers = () => {
   const queryClient = useQueryClient();
   const { data: users = [], isLoading, isError } = useOnlineUsers();
-  console.log(users);
-
+  const { user } = useSelector((state) => state.auth);
+ 
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
@@ -26,14 +28,27 @@ const OnlineUsers = () => {
   if (isLoading) return <p>Loading online users...</p>;
   if (isError) return <p>Failed to load users</p>;
 
+  const cleanedUsers = excludeUserById(user._id, users);
+
   return (
-    <div className="bg-green-400 mx-14 py-2">
-      <h3>Online Users ({users.length})</h3>
-      <ul className="">
-        {users.map((user) => (
-          <li key={user._id} className=" flex  items-center">
-            <div className="w-10 h-10 bg-green-600 rounded-full mt-2 mr-2"></div>
-            {user.username}
+    <div className="mx-14 py-2">
+      <h3>Online Users ({cleanedUsers.length})</h3>
+      <ul className="mt-6 flex flex-col gap-3">
+        {cleanedUsers.map((user) => (
+          <li
+            key={user._id}
+            className="flex items-center justify-between  bg-gray-200 rounded-lg p-2 mb-2 "
+          >
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-green-600 rounded-full mr-2"></div>
+              <div>
+                <p>{user.username}</p>
+                <p className="text-xs text-gray-600">{user.email}</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-center bg-blue-500 py-1 px-4 rounded text-white font-semibold cursor-pointer">
+              Request Match
+            </div>
           </li>
         ))}
       </ul>

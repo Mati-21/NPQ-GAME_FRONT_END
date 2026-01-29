@@ -14,6 +14,7 @@ import { connectSocket, disconnectSocket } from "./utils/socket";
 import { logout, setCredentials } from "./features/Auth/authSlice.js";
 import { useQuery } from "@tanstack/react-query";
 import { checkAuth } from "./api/user.api.js";
+import Profile from "./pages/HOME_PAGE/Profile/Profile.jsx";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -31,13 +32,11 @@ function App() {
 
   useEffect(() => {
     if (data) {
-      console.log("Auth success:", data);
       dispatch(setCredentials({ user: data.user }));
       connectSocket();
     }
 
     if (error) {
-      console.log("Auth failed:", error.response?.status);
       dispatch(logout());
       disconnectSocket();
     }
@@ -96,6 +95,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          {/* Protected routes */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />
