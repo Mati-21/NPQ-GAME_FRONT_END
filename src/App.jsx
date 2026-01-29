@@ -4,17 +4,44 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Notfound from "./pages/Notfound";
 import Navbar from "./components/Navbar";
-
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import Home from "./pages/HOME_PAGE/Home";
-import { useSelector } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { connectSocket, disconnectSocket } from "./utils/socket";
+import { logout, setCredentials } from "./features/Auth/authSlice.js";
+import { useQuery } from "@tanstack/react-query";
+import { checkAuth } from "./api/user.api.js";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  console.log(isAuthenticated);
+  // console.log(isAuthenticated);
+
+  const dispatch = useDispatch();
+
+  const { isLoading, data, error } = useQuery({
+    queryKey: ["auth"],
+    queryFn: checkAuth,
+    retry: false,
+    refetchInterval: 1000 * 60 * 10, // Refetch every hour
+    refetchIntervalInBackground: true,
+  });
+
+  useEffect(() => {
+    if (data) {
+      console.log("Auth success:", data);
+      dispatch(setCredentials({ user: data.user }));
+      connectSocket();
+    }
+
+    if (error) {
+      console.log("Auth failed:", error.response?.status);
+      dispatch(logout());
+      disconnectSocket();
+    }
+  }, [data, error, dispatch]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -23,6 +50,14 @@ function App() {
       disconnectSocket();
     }
   }, [isAuthenticated]);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <h1 className="text-2xl font-semibold">Loading...</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-white-background flex flex-col">

@@ -11,22 +11,18 @@ import TopNavigation from "./TopNavigation/TopNavigation.jsx";
 import { useState } from "react";
 
 function Home() {
-  // const { activeTab } = useSelector((state) => state.UI_Slice);
-  const [activeTab, setActiveTabLocal] = useState("none");
-
-  const topPlayers = users.slice(0, 5); // top 5 users
-  console.log(topPlayers);
+  const [activeTabLocal, setActiveTabLocal] = useState("none");
 
   return (
     <div className="flex-1 bg-white-background pb-10 overflow-y-auto">
       {/* Header Navigation */}
       <TopNavigation setActiveTabLocal={setActiveTabLocal} />
 
-      {activeTab === "none" && <TopPlayers />}
-      {activeTab === "play_With_Friend" && <PlayWithFriend />}
-      {activeTab === "Game_History" && <GameHistory />}
-      {activeTab === "Online_Users" && <OnlineUsers />}
-      {activeTab === "Friend_Request" && <FriendRequest />}
+      {activeTabLocal === "none" && <TopPlayers />}
+      {activeTabLocal === "play_With_Friend" && <PlayWithFriend />}
+      {activeTabLocal === "Game_History" && <GameHistory />}
+      {activeTabLocal === "Online_Users" && <OnlineUsers />}
+      {activeTabLocal === "Friend_Request" && <FriendRequest />}
     </div>
   );
 }
