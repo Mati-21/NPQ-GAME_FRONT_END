@@ -1,5 +1,5 @@
 function PlayWithFriend() {
-  return <div>Play with a friend component</div>;
+  return <div className="mx-14 py-2">Play with a friend component</div>;
 }
 
 export default PlayWithFriend;

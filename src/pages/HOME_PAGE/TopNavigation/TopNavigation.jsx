@@ -1,17 +1,25 @@
-import { Search } from "lucide-react";
-// import { useDispatch } from "react-redux";
-// import { setActiveTab } from "../../../features/UI_Slice/UI_Slice";
+import { useRef, useState } from "react";
+import SearchComponent from "../Search/SearchComponent";
 
 function TopNavigation({ setActiveTabLocal }) {
-  // const dispatch = useDispatch();
+  const [searchedUsers, setSearchedUsers] = useState([]);
+  const InpRef = useRef();
 
   const handleTabClick = (tabName) => {
-    // dispatch(setActiveTab(tabName));
+    setSearchedUsers([]);
     setActiveTabLocal(tabName);
+    CleanSearch();
+  };
+
+  const CleanSearch = () => {
+    if (InpRef.current) {
+      InpRef.current.value = "";
+    }
   };
 
   return (
-    <div className=" w-full flex justify-between items-center bg-white-background  px-14 py-4  gap-4 mt-6">
+    <div className="relative w-full flex justify-between items-center 0  px-14 py-4  gap-4 mt-6">
+      {/* Tapped Components */}
       <div className="flex gap-4">
         <div
           onClick={() => handleTabClick("play_With_Friend")}
@@ -39,14 +47,12 @@ function TopNavigation({ setActiveTabLocal }) {
         </div>
       </div>
 
-      <div className="shadow-all white rounded-full py-2 w-sm outline-none px-6 text-black flex gap-2">
-        <input
-          type="text"
-          className="flex-1 outline-none placeholder:text-sm placeholder:text-gray-500/50 "
-          placeholder="Search for a user"
-        />
-        <Search className="cursor-pointer" />
-      </div>
+      {/* Search Components  */}
+      <SearchComponent
+        searchedUsers={searchedUsers}
+        setSearchedUsers={setSearchedUsers}
+        InpRef={InpRef}
+      />
     </div>
   );
 }

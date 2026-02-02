@@ -37,10 +37,16 @@ export const checkAuth = async () => {
     const response = await axiosInstance.get("/auth/checkAuth", {
       withCredentials: true,
     });
-    
+
     return response.data; // goes to onSuccess
   } catch (error) {
     console.log("Axios error:", error.response?.status, error.response?.data);
     throw error; // important: rethrow so onError triggers
   }
 };
+
+export const fetchSearchUsers = async (query) => {
+  const res = await axiosInstance.get(`/user/searchuser?q=${query}`);
+  return res.data;
+};
+

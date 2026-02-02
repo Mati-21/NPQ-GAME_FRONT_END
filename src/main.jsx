@@ -7,6 +7,7 @@ import App from "./App.jsx";
 import "./styles/index.css";
 import { PersistGate } from "redux-persist/integration/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// import Experiment1 from "./ForExperiments/Experiment1.jsx";
 
 const queryClient = new QueryClient();
 
@@ -21,3 +22,9 @@ createRoot(document.getElementById("root")).render(
     </QueryClientProvider>
   </StrictMode>,
 );
+
+// createRoot(document.getElementById("root")).render(
+//   <StrictMode>
+//     <Experiment1 />
+//   </StrictMode>,
+// );

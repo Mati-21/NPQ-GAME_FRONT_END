@@ -1,4 +1,4 @@
-import { SunMedium, Moon, LogOut } from "lucide-react";
+import { SunMedium, Moon, LogOut, Bell } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/Auth/authSlice";
@@ -75,14 +75,22 @@ function Navbar() {
                 <span className="text-xs">{user.username}</span>
               </div>
 
+              {/* Notification */}
+              <div className="relative cursor-pointer">
+                <Bell className="text-black" />
+                <div className="absolute bottom-[60%] right-0  bg-red-500 size-4 rounded-full flex justify-center items-center text-xs text-white font-semibold">
+                  2
+                </div>
+              </div>
+
+              {/* Theme toggle */}
+              <SunMedium size={30} className="cursor-pointer text-black" />
+
               {/* Logout */}
               <LogOut
                 onClick={handleLogout}
                 className="cursor-pointer text-black"
               />
-
-              {/* Theme toggle */}
-              <SunMedium size={30} className="cursor-pointer text-black" />
             </div>
           )}
         </div>

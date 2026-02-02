@@ -1,6 +1,6 @@
 function GameHistory() {
     return (
-        <div>
+        <div className="mx-14 py-2">
             Game history component
         </div>
     )
