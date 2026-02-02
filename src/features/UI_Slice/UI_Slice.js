@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   activeTab: "none",
   onlineUsers: [],
+  NotificationModal: false,
 };
 
 const UI_Slice = createSlice({
@@ -21,6 +22,15 @@ const UI_Slice = createSlice({
     clearOnlineUsers: (state) => {
       state.onlineUsers = [];
     },
+    openNotificationModal: (state) => {
+      state.NotificationModal = true;
+    },
+    closeNotificationModal: (state) => {
+      state.NotificationModal = false;
+    },
+    toggleNotificationModal: (state) => {
+      state.NotificationModal = !state.NotificationModal;
+    },
   },
 });
 
@@ -29,6 +39,9 @@ export const {
   resetActiveTab,
   setOnlineUsers,
   clearOnlineUsers,
+  openNotificationModal,
+  closeNotificationModal,
+  toggleNotificationModal,
 } = UI_Slice.actions;
 
 export default UI_Slice.reducer;

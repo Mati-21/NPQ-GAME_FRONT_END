@@ -4,7 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/Auth/authSlice";
 
 import { disconnectSocket } from "../utils/socket";
-import { resetActiveTab } from "../features/UI_Slice/UI_Slice";
+import {
+  resetActiveTab,
+  openNotificationModal,
+  closeNotificationModal,
+  toggleNotificationModal,
+} from "../features/UI_Slice/UI_Slice";
+import Notification from "../pages/HOME_PAGE/Notification/Notification";
 
 function Navbar() {
   const location = useLocation();
@@ -15,7 +21,11 @@ function Navbar() {
 
   // get logged-in user from redux
   const user = useSelector((state) => state.auth.user);
+  const NotificationModal = useSelector(
+    (state) => state.UI_Slice.NotificationModal,
+  );
 
+  console.log(NotificationModal);
   // handle logout
   const handleLogout = () => {
     disconnectSocket();
@@ -76,11 +86,16 @@ function Navbar() {
               </div>
 
               {/* Notification */}
-              <div className="relative cursor-pointer">
+              <div
+                onClick={() => dispatch(toggleNotificationModal())}
+                
+                className="relative cursor-pointer"
+              >
                 <Bell className="text-black" />
                 <div className="absolute bottom-[60%] right-0  bg-red-500 size-4 rounded-full flex justify-center items-center text-xs text-white font-semibold">
                   2
                 </div>
+                {NotificationModal && <Notification />}
               </div>
 
               {/* Theme toggle */}
