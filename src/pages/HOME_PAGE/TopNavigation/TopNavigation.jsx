@@ -22,6 +22,12 @@ function TopNavigation({ setActiveTabLocal }) {
       {/* Tapped Components */}
       <div className="flex gap-4">
         <div
+          onClick={() => handleTabClick("List_of_Friends")}
+          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100"
+        >
+          List of Friends
+        </div>
+        <div
           onClick={() => handleTabClick("play_With_Friend")}
           className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 duration-500"
         >

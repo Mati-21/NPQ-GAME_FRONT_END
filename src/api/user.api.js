@@ -50,3 +50,35 @@ export const fetchSearchUsers = async (query) => {
   return res.data;
 };
 
+export const getSomeUsers = async (usersId) => {
+  const res = await axiosInstance.post("/user/getSomeUsers", {
+    usersId,
+  });
+  return res.data;
+};
+
+// get friends
+export const getFriends = async (FriendsId) => {
+  console.log("from Gete Freinds");
+  const res = await axiosInstance.post("/user/getFriends", {
+    FriendsId,
+  });
+  return res.data;
+};
+
+// API call
+export const acceptFriendRequest = async (friendId) => {
+  const res = await axiosInstance.put(`/friends/accept/${friendId}`);
+  return res.data;
+};
+
+// add friend
+export const addFriend = async (userId) => {
+  const res = await axiosInstance.post(`/friends/request/${userId}`);
+  return res.data;
+};
+
+export const unfriend = async (friendId) => {
+  const res = await axiosInstance.delete(`/friends/unfriend/${friendId}`);
+  return res.data;
+};

@@ -6,8 +6,6 @@ import { logout } from "../features/Auth/authSlice";
 import { disconnectSocket } from "../utils/socket";
 import {
   resetActiveTab,
-  openNotificationModal,
-  closeNotificationModal,
   toggleNotificationModal,
 } from "../features/UI_Slice/UI_Slice";
 import Notification from "../pages/HOME_PAGE/Notification/Notification";
@@ -25,7 +23,6 @@ function Navbar() {
     (state) => state.UI_Slice.NotificationModal,
   );
 
-  console.log(NotificationModal);
   // handle logout
   const handleLogout = () => {
     disconnectSocket();
@@ -88,7 +85,6 @@ function Navbar() {
               {/* Notification */}
               <div
                 onClick={() => dispatch(toggleNotificationModal())}
-                
                 className="relative cursor-pointer"
               >
                 <Bell className="text-black" />
