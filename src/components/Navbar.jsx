@@ -31,7 +31,7 @@ function Navbar() {
   };
 
   return (
-    <div className="w-screen px-20 bg-purple-secondary shadow-md p-3 text-white">
+    <div className="w-screen px-20 bg-purple-secondary shadow-md p-3 text-white sticky top-0 z-50 bg-white">
       <div className="flex justify-between items-center">
         {/* Logo */}
         <Link

@@ -1,47 +1,58 @@
-import { CircleX, Pen } from "lucide-react";
+import { Calendar, CircleX, Gpu, Locate, Map, MapPin, Pen } from "lucide-react";
 import { Link } from "react-router-dom";
+import UserTimeline from "./UserTimeline";
+import EditProfile from "./EditProfile";
 
 function Profile() {
   return (
-    <div className="relative my-4 bg-white h-screen flex flex-col items-center rounded-2xl shadow-all w-1/2 mx-auto">
-      <div className="absolute top-10 left-10 cursor-pointer">
-        <Pen />
-      </div>
-      <Link to="/" className="absolute top-10 right-10 cursor-pointer">
-        <CircleX />
-      </Link>
-
-      {/* Profile  */}
-      <h1 className="mt-2 text-2xl font-semibold tracking-wider">Profile</h1>
-
-      {/* Profile Picture */}
-      <div className="h-40 w-40  rounded-full mt-4 shadow-all">
-        <img src="#" alt="" />
-      </div>
-
-      {/* Stats */}
-      <div className="flex gap-8 mt-4 bg-gray-100 p-4 rounded-lg shadow-inner">
-        <div className="cursor-pointer px-2 flex flex-col gap-1 items-center">
-          <p>Games</p>
-          <p className="text-2xl">2</p>
+    <div className="shadow-all m-2 flex-1 flex justify-start">
+      <div className="relative h-full shadow-all  flex flex-col items-center w-1/4 mx-auto ">
+        <div className="absolute top-6 left-6 cursor-pointer">
+          <Pen />
         </div>
-        <div className="cursor-pointer px-2 flex flex-col gap-1 items-center">
-          <p className="text-xl font-bold text-green-400">Win</p>
-          <p className="text-2xl">5</p>
+        <Link to="/" className="absolute top-6 right-6 cursor-pointer">
+          <CircleX />
+        </Link>
+
+        {/* cover Picture */}
+        <div className="flex flex-col justify-center  w-full h-1/2">
+          <img src="#" alt="" />
+          <div className=""></div>
         </div>
-        <div className="cursor-pointer px-2 flex text-red-500 flex-col gap-1 items-center">
-          <p>Lose</p>
-          <p className="text-2xl">0</p>
+        {/* Discription */}
+        <div className="flex flex-col gap-2  h-full w-full px-6 pb-10 scrollbar-custom">
+          <h2 className="font-semibold border-b border-gray-300 pb-1">Name</h2>
+          <h1 className="text-sm">Mati Melakmu</h1>
+          <h2 className="font-semibold border-b border-gray-300 pb-1 mt-2">
+            Email
+          </h2>
+          <h1 className="text-sm">Matimelkamu@gmail.com</h1>
+          <h2 className="font-semibold border-b border-gray-300 pb-1 mt-2">
+            About Me
+          </h2>
+          <p className="text-sm">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis
+            offia ea!font-semibold border-b border-gray-300 pb-1
+          </p>
+
+          <h2 className="font-semibold border-b border-gray-300 pb-1 mt-2">
+            Bio
+          </h2>
+          <p className="text-sm">quaerat enim mnis voluptatibus soluta ea!</p>
+
+          <div className=" flex items-center gap-2 mt-4">
+            <Calendar size={20} />{" "}
+            <p className="text-sm font-semibold">Joined: july 2005</p>
+          </div>
+          <div className=" flex items-center gap-2 mt-4">
+            <MapPin size={20} />{" "}
+            <p className="text-sm font-semibold">Ethiopia, Addis Ababa</p>
+          </div>
         </div>
       </div>
 
-      {/* User Info */}
-
-      <div className=" w-full flex-1 px-6">
-        <h2 className="mt-6 text-md font-semibold">Username: user123</h2>
-        <h2 className="mt-2 text-md font-semibold">Email: user123@gmail.com</h2>
-        <h2 className="mt-2 text-md font-semibold">Phone: 0961838196</h2>
-      </div>
+      {/*  */}
+      <EditProfile />
     </div>
   );
 }
