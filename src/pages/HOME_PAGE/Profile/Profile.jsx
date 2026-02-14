@@ -29,17 +29,14 @@ function Profile() {
         <div className="flex flex-col gap-2  w-full px-6 pb-2 h-full  scrollbar-custom py-4">
           <h2 className="font-semibold   text-xs">Name</h2>
           <h1 className="text-xs border-b border-gray-300 pb-1">
-            Mati Melakmu
+            {user.firstName} {user.lastName}
           </h1>
           <h2 className="font-semibold  mt-2 text-xs">Email</h2>
           <h1 className="text-xs border-b border-gray-300 pb-1">
-            Matimelkamu@gmail.com
+            {user.email}
           </h1>
           <h2 className="font-semibold  mt-2 text-xs">About Me</h2>
-          <p className="text-xs border-b border-gray-300 pb-1">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis
-            offia ea!font-semibold border-b border-gray-300 pb-1
-          </p>
+          <p className="text-xs border-b border-gray-300 pb-1">{user.about}</p>
 
           <h2 className="font-semibold  mt-2 text-xs">Bio</h2>
           <p className="text-xs border-b border-gray-300 pb-1 ">
@@ -48,11 +45,13 @@ function Profile() {
 
           <div className=" flex items-center gap-2 mt-4 border-b border-gray-300 pb-1">
             <Calendar size={20} />{" "}
-            <p className="text-xs font-semibold">Joined: july 2005</p>
+            <p className="text-xs font-semibold">Joined: {user.createdAt}</p>
           </div>
           <div className=" flex items-center gap-2 mt-4 border-b border-gray-300 pb-1">
             <MapPin size={20} />{" "}
-            <p className="text-xs font-semibold">Ethiopia, Addis Ababa</p>
+            <p className="text-xs font-semibold">
+              {user.location.country}, {user.location.region}
+            </p>
           </div>
         </div>
       </div>
