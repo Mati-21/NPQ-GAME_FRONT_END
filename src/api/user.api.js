@@ -82,3 +82,7 @@ export const unfriend = async (friendId) => {
   const res = await axiosInstance.delete(`/friends/unfriend/${friendId}`);
   return res.data;
 };
+export const updateProfile = async (formData) => {
+  const res = await axiosInstance.patch(`/user/updateProfile`, formData);
+  return res.data;
+};

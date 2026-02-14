@@ -1,71 +1,84 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useUpdateProfile } from "../../../hooks/useUpdateProfile";
+import { useSelector } from "react-redux";
+import { useQueryClient } from "@tanstack/react-query";
 
 function EditProfile() {
-  // Initial fake data from API
-  const fakeUserData = {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    birthDate: "1990-05-15",
-    bio: "Software Engineer | React Developer",
-    aboutMe:
-      "Passionate about creating beautiful web applications. Love hiking and photography in my free time.",
-    country: "United States",
-    region: "California",
-    profileImage:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-  };
+  const queryClient = useQueryClient();
+  const { mutateAsync, isPending } = useUpdateProfile();
 
-  // State for form data
   const [formData, setFormData] = useState({
-    ...fakeUserData,
+    firstName: "",
+    lastName: "",
+    email: "",
+    birthDate: "",
+    bio: "",
+    aboutMe: "",
+    country: "",
+    region: "",
+    profileImage: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
+    avatar: "",
   });
 
-  // State for tracking changes
   const [hasChanges, setHasChanges] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+  const [profileImagePreview, setProfileImagePreview] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
 
-  // Simulate API call to get user data
+  // Fetch real user data from API
+  const { user } = useSelector((state) => state.auth);
+
+  // Use a ref to track if we've already set the initial form data
+  const hasSetInitialData = useRef(false);
+
   useEffect(() => {
-    // In a real app, this would be an API call
-    // For demo, we're using the fake data directly
-    setFormData({
-      ...fakeUserData,
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-  }, []);
+    // Only set form data if user exists and we haven't set it yet
+    if (user && !hasSetInitialData.current) {
+      setFormData({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        birthDate: user.birthDate || "",
+        bio: user.bio || "",
+        aboutMe: user.aboutMe || "",
+        country: user.location.country || "",
+        region: user.location.region || "",
+        profileImage: user.profileImage || "",
+        avatar: user.avatar || "",
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+      // Reset image preview when user data loads
+      setProfileImagePreview(null);
+      setProfileImageFile(null);
+
+      // Mark that we've set the initial data
+      hasSetInitialData.current = true;
+    }
+  }, [user]); // Only depend on user
 
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setHasChanges(true);
     setSaveMessage("");
   };
 
-  // Handle image upload (simulated)
+  // Handle image upload
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData((prev) => ({
-          ...prev,
-          profileImage: event.target.result,
-        }));
-        setHasChanges(true);
-        setSaveMessage("");
-      };
-      reader.readAsDataURL(file);
+
+      setProfileImageFile(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+      setHasChanges(true);
+      setSaveMessage("");
     }
   };
 
@@ -73,52 +86,109 @@ function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic password validation
-    if (
-      formData.newPassword &&
-      formData.newPassword !== formData.confirmPassword
-    ) {
-      setSaveMessage("New passwords do not match!");
-      return;
+    // Password validation
+    if (formData.newPassword || formData.confirmPassword) {
+      if (!formData.currentPassword) {
+        setSaveMessage("Current password is required to change password!");
+        return;
+      }
+
+      if (formData.newPassword !== formData.confirmPassword) {
+        setSaveMessage("New passwords do not match!");
+        return;
+      }
+
+      if (formData.newPassword.length < 6) {
+        setSaveMessage("New password must be at least 6 characters long!");
+        return;
+      }
     }
 
-    setIsSaving(true);
     setSaveMessage("Saving changes...");
 
-    // Simulate API call to save data
-    setTimeout(() => {
-      console.log("Saved data:", {
-        ...formData,
-        currentPassword: formData.currentPassword ? "***" : "",
-        newPassword: formData.newPassword ? "***" : "",
-        confirmPassword: formData.confirmPassword ? "***" : "",
-      });
+    try {
+      const body = new FormData();
+      body.append("firstName", formData.firstName);
+      body.append("lastName", formData.lastName);
+      body.append("email", formData.email);
+      body.append("birthDate", formData.birthDate);
+      body.append("bio", formData.bio);
+      body.append("aboutMe", formData.aboutMe);
+      body.append("country", formData.country);
+      body.append("region", formData.region);
 
-      setIsSaving(false);
-      setHasChanges(false);
+      // Include password fields only if provided
+      if (formData.currentPassword && formData.newPassword) {
+        body.append("currentPassword", formData.currentPassword);
+        body.append("newPassword", formData.newPassword);
+      }
+
+      // Include image file if changed
+      if (profileImageFile) {
+        body.append("avatar", profileImageFile);
+      }
+
+      await mutateAsync(body);
+
       setSaveMessage("Profile updated successfully!");
+      setHasChanges(false);
 
-      // Reset password fields after successful save
+      // Update React Query cache
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+
+      // Reset password and image file fields
       setFormData((prev) => ({
         ...prev,
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       }));
-    }, 1500);
+      setProfileImageFile(null);
+      setProfileImagePreview(null);
+
+      // Allow initial data to be set again if user data changes later
+      // (optional, but may be needed if the user object is updated elsewhere)
+      hasSetInitialData.current = false;
+    } catch (error) {
+      setSaveMessage(error?.response?.data?.message || "Something went wrong");
+    }
   };
 
-  // Handle reset to original data
+  // Reset form to current user data
   const handleReset = () => {
-    setFormData({
-      ...fakeUserData,
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
+    if (user) {
+      setFormData({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        birthDate: user.birthDate || "",
+        bio: user.bio || "",
+        aboutMe: user.aboutMe || "",
+        country: user.location.country || "",
+        region: user.location.region || "",
+        profileImage: user.profileImage || "",
+        avatar: user.avatar || "",
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setProfileImagePreview(null);
+      setProfileImageFile(null);
+    }
     setHasChanges(false);
     setSaveMessage("");
   };
+
+  // Cleanup object URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (profileImagePreview) {
+        URL.revokeObjectURL(profileImagePreview);
+      }
+    };
+  }, [profileImagePreview]);
+
+  if (!user) return <p className="p-4">Loading user data...</p>;
 
   return (
     <div className="flex-1 flex p-4">
@@ -126,10 +196,16 @@ function EditProfile() {
         {/* Save button and message */}
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-semibold">Edit Profile</h2>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ">
             {saveMessage && (
               <span
-                className={`text-sm ${saveMessage.includes("successfully") ? "text-green-600" : "text-red-600"}`}
+                className={`text-sm ${
+                  saveMessage.includes("successfully")
+                    ? "text-green-600"
+                    : saveMessage.includes("Saving")
+                      ? "text-blue-600"
+                      : "text-red-600"
+                }`}
               >
                 {saveMessage}
               </span>
@@ -138,8 +214,8 @@ function EditProfile() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50"
-                disabled={isSaving}
+                className="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                disabled={isPending}
               >
                 Reset Changes
               </button>
@@ -147,9 +223,9 @@ function EditProfile() {
             <button
               type="submit"
               className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={isSaving || !hasChanges}
+              disabled={isPending || !hasChanges}
             >
-              {isSaving ? "Saving..." : "Save Changes"}
+              {isPending ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </div>
@@ -161,9 +237,9 @@ function EditProfile() {
               <div>
                 <label className="text-sm font-medium">Update Profile:</label>
                 <div className="mt-2 flex items-center gap-4">
-                  <div className="h-30 w-30 rounded-full bg-gray-300 overflow-hidden border-2 border-gray-400">
+                  <div className="h-20 w-20 rounded-full bg-gray-300 overflow-hidden border-2 border-gray-400">
                     <img
-                      src={formData.profileImage}
+                      src={profileImagePreview || formData.avatar}
                       alt="Profile"
                       className="h-full w-full object-cover"
                     />
@@ -178,11 +254,11 @@ function EditProfile() {
                     />
                     <label
                       htmlFor="profileImage"
-                      className="px-4 py-2 text-sm bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200"
+                      className="px-4 py-2 text-sm bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200 inline-block"
                     >
                       Change Photo
                     </label>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-2">
                       Click to upload a new profile image
                     </p>
                   </div>
@@ -202,6 +278,7 @@ function EditProfile() {
                     value={formData.firstName}
                     onChange={handleChange}
                     className="bg-gray-100 border px-3 py-2 rounded outline-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   />
                 </div>
                 <div className="flex flex-col flex-1 gap-1">
@@ -215,6 +292,7 @@ function EditProfile() {
                     value={formData.lastName}
                     onChange={handleChange}
                     className="bg-gray-100 border px-3 py-2 rounded outline-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   />
                 </div>
               </div>
@@ -232,6 +310,7 @@ function EditProfile() {
                     value={formData.email}
                     onChange={handleChange}
                     className="bg-gray-100 border px-3 py-2 rounded outline-none text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   />
                 </div>
                 <div className="flex flex-col gap-1 flex-1">

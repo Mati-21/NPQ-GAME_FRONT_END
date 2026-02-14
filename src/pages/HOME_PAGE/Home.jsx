@@ -9,6 +9,7 @@ import PlayWithFriend from "./TabbedComponent/PlayWithFriend.jsx";
 import TopNavigation from "./TopNavigation/TopNavigation.jsx";
 import { useState } from "react";
 import ListofFriends from "./TabbedComponent/ListofFriends.jsx";
+import { useSelector } from "react-redux";
 
 function Home() {
   const [activeTabLocal, setActiveTabLocal] = useState("none");

@@ -122,17 +122,27 @@ export default App;
 /*
 <div className="h-screen bg-white-background flex overflow-x-hidden scrollbar-custom flex-col">
   {/* navbar */
-  // <div className="w-screen px-20 bg-purple-secondary shadow-md p-3 text-white sticky top-0 z-50 bg-white"></div>
-  {/* profile page */}
-  // <div className="shadow-all m-2 flex-1 flex justify-start">
-    {/* sidebar  */}
-    // <div className="relative h-full shadow-all  flex flex-col items-center w-1/4 mx-auto ">
-      {/* cover Picture */}
-      // <div className="flex flex-col justify-center bg-amber-100 w-full  h-1/2"></div>
-      {/* Discription */}
-      // <div className="flex flex-col gap-2 mt-4 h-full w-full px-6 pb-10 scrollbar-custom"></div>
-    // </div>
-    {/* user profile time line */}
-    // <div className="flex-1 flex"></div>
-  // </div>
+// <div className="w-screen px-20 bg-purple-secondary shadow-md p-3 text-white sticky top-0 z-50 bg-white"></div>
+{
+  /* profile page */
+}
+// <div className="shadow-all m-2 flex-1 flex justify-start">
+{
+  /* sidebar  */
+}
+// <div className="relative h-full shadow-all  flex flex-col items-center w-1/4 mx-auto ">
+{
+  /* cover Picture */
+}
+// <div className="flex flex-col justify-center bg-amber-100 w-full  h-1/2"></div>
+{
+  /* Discription */
+}
+// <div className="flex flex-col gap-2 mt-4 h-full w-full px-6 pb-10 scrollbar-custom"></div>
+// </div>
+{
+  /* user profile time line */
+}
+// <div className="flex-1 flex"></div>
+// </div>
 // </div>;

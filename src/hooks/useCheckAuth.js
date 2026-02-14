@@ -13,11 +13,12 @@ export const useCheckAuth = () => {
     queryFn: checkAuth,
     retry: false, // don't retry on 401
     staleTime: 5 * 60 * 1000, // optional
-    onSuccess: (data) => {
-      dispatch(setCredentials({ user: data.user }));
-    },
-    onError: () => {
-      dispatch(logout());
-    },
+    // onSuccess: (data) => {
+    //   console.log(data);
+    //   dispatch(setCredentials({ user: data.user }));
+    // },
+    // onError: () => {
+    //   dispatch(logout());
+    // },
   });
 };
