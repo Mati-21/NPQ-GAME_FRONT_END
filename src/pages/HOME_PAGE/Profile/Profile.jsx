@@ -28,18 +28,21 @@ function Profile() {
         <div className="flex flex-col gap-2  w-full px-6 pb-2 h-full  scrollbar-custom py-4">
           <h2 className="font-semibold   text-xs">Name</h2>
           <h1 className="text-xs border-b border-gray-300 pb-1">
-            {user.firstName} {user.lastName}
+            {user.firstName ? user.firstName : "N/A"}{" "}
+            {user.lastName ? user.lastName : "N/A"}
           </h1>
           <h2 className="font-semibold  mt-2 text-xs">Email</h2>
           <h1 className="text-xs border-b border-gray-300 pb-1">
             {user.email}
           </h1>
           <h2 className="font-semibold  mt-2 text-xs">About Me</h2>
-          <p className="text-xs border-b border-gray-300 pb-1">{user.aboutMe}</p>
+          <p className="text-xs border-b border-gray-300 pb-1">
+            {user.aboutMe ? user.aboutMe : "N/A"}
+          </p>
 
           <h2 className="font-semibold  mt-2 text-xs">Bio</h2>
           <p className="text-xs border-b border-gray-300 pb-1 ">
-            quaerat enim mnis voluptatibus soluta ea!
+            {user.bio ? user.bio : "N/A"}
           </p>
 
           <div className=" flex items-center gap-2 mt-4 border-b border-gray-300 pb-1">
@@ -52,7 +55,8 @@ function Profile() {
           <div className=" flex items-center gap-2 mt-4 border-b border-gray-300 pb-1">
             <MapPin size={20} />{" "}
             <p className="text-xs font-semibold">
-              {user.location.country}, {user.location.region}
+              {user.location.country ? user.location.country : "N/A"},{" "}
+              {user.location.region ? user.location.region : "N/A"}
             </p>
           </div>
         </div>

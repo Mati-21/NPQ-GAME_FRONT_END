@@ -27,8 +27,8 @@ function ListofFriends() {
   }
 
   return (
-    <div className="mx-14 py-4">
-      <h2 className="text-lg font-semibold mb-4">Friends</h2>
+    <div className="mx-14 my-2">
+      <h2 className="text-xl font-semibold mb-4 tracking-widest">Friends</h2>
 
       {friends.length === 0 ? (
         <div className="text-sm text-gray-500 text-center">
@@ -39,7 +39,7 @@ function ListofFriends() {
           {friends.map((friend) => (
             <div
               key={friend._id}
-              className="flex items-center justify-between bg-white shadow-sm rounded-lg p-3 hover:bg-gray-50 transition"
+              className="flex items-center justify-between bg-white shadow-card rounded-lg p-3 hover:bg-gray-50 transition"
             >
               {/* Left: avatar + info */}
               <div className="flex items-center gap-3">

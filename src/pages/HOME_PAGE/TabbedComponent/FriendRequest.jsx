@@ -15,10 +15,10 @@ function FriendRequest() {
   if (isLoading) return <p>Loading friend requests...</p>;
 
   return (
-    <div className=" flex-1">
-      <div className="mx-14 py-2 w-1/3 px-4  rounded flex-1">
+    <div className="flex-1">
+      <div className="mx-14 py-2 w-1/3 rounded flex-1">
         <div className="w-full flex flex-col gap-3 mb-2">
-          <h1 className="text-3xl mb-5">Friend Requests</h1>
+          <h1 className="text-xl mb-5">Friend Requests</h1>
           {users?.map((u) => (
             <div key={u._id} className="flex justify-between items-center">
               <div className="flex gap-2">

@@ -8,8 +8,9 @@ import { useSelector } from "react-redux";
 const OnlineUsers = () => {
   const queryClient = useQueryClient();
   const { data: users = [], isLoading, isError } = useOnlineUsers();
+
   const { user } = useSelector((state) => state.auth);
- 
+
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
@@ -32,15 +33,17 @@ const OnlineUsers = () => {
 
   return (
     <div className="mx-14 py-2">
-      <h3>Online Users ({cleanedUsers.length})</h3>
-      <ul className="mt-6 flex flex-col gap-3">
+      <h3 className="text-xl">Online Users ({cleanedUsers.length})</h3>
+      <ul className="mt-4 flex flex-col gap-3">
         {cleanedUsers.map((user) => (
           <li
             key={user._id}
-            className="flex items-center justify-between  bg-gray-200 rounded-lg p-2 mb-2 "
+            className="flex items-center justify-between shadow-card rounded-lg p-3 mb-2 bg-white"
           >
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-green-600 rounded-full mr-2"></div>
+              <div className="w-10 h-10 rounded-full mr-2 overflow-hidden">
+                <img src={user.avatar} alt="" />
+              </div>
               <div>
                 <p>{user.username}</p>
                 <p className="text-xs text-gray-600">{user.email}</p>

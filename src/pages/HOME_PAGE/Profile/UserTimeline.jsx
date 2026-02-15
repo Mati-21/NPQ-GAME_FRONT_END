@@ -16,7 +16,7 @@ const UserTimeline = () => {
           <div className="flex items-center space-x-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-800">
-                Player: {user.firstName}
+                Player: {user.firstName || user.username || "N/A"}
               </h1>
               <p className="text-sm text-gray-500">Game Stat</p>
             </div>
