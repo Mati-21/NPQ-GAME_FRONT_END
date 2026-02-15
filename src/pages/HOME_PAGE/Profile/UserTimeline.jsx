@@ -1,18 +1,37 @@
+import { CircleX, Pen } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { openEditProfile } from "../../../features/UI_Slice/UI_Slice";
+
 const UserTimeline = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
   return (
     <div className="flex-1 flex">
       {/* User stat */}
-      <div className="flex-1 mx-auto p-6 bg-white shadow-lg rounded-xl">
+      <div className="flex-1 mx-auto p-6 bg-whi shadow-lg rounded-xl">
         {/* Header */}
-        <div className="flex items-center space-x-4 mb-6">
-          <img
-            src="https://i.pravatar.cc/150?img=12"
-            alt="Player Avatar"
-            className="w-20 h-20 rounded-full border-2 border-indigo-500"
-          />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">PlayerOne</h1>
-            <p className="text-sm text-gray-500">NPQ Game Player</p>
+        <div className="flex items-center justify-between px-2 mb-6 mt-6 ">
+          <div className="flex items-center space-x-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">
+                Player: {user.firstName}
+              </h1>
+              <p className="text-sm text-gray-500">Game Stat</p>
+            </div>
+          </div>
+
+          <div className="flex justify-around bg-white shadow-all  text-black w-32 py-2 rounded-full ">
+            <div
+              className="cursor-pointer"
+              onClick={() => dispatch(openEditProfile())}
+            >
+              <Pen color="green" size={20} />
+            </div>
+            <Link to="/" className="cursor-pointer">
+              <CircleX size={20} color="red" />
+            </Link>
           </div>
         </div>
 

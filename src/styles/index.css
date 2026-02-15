@@ -10,7 +10,6 @@
 :root {
   --color-purple-primary: #160087;
   --color-purple-secondary: #021c80;
-  --color-white-background: #f5f6f7;
 
   --shadow-soft-purple: 0 4px 15px rgba(22, 0, 135, 0.3);
   --shadow-deep-purple: 0 10px 25px rgba(2, 28, 128, 0.4);
@@ -34,6 +33,7 @@
   --shadow-neon-purple: var(--shadow-neon-purple);
   --shadow-card: var(--shadow-card);
   --shadow-all: var(--shadow-all);
+  --color-twitter-white: #f5f6f7;
 }
 
 /* ===================== */

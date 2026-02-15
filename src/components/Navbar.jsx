@@ -73,9 +73,9 @@ function Navbar() {
               {/* Avatar */}
               <Link
                 to="/profile"
-                className="w-10 h-10 rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold"
+                className="w-12 h-12 overflow-hidden shadow-all rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold"
               >
-                {user.name ? user.name[0].toUpperCase() : "U"}
+                <img src={user.avatar} alt="" className="h-full w-full object-cover" />
               </Link>
               <div className="flex flex-col gap-0 text-black">
                 <span className="font-medium">{user.email}</span>

@@ -4,6 +4,7 @@ const initialState = {
   activeTab: "none",
   onlineUsers: [],
   NotificationModal: false,
+  isEditProfileOpen: false,
 };
 
 const UI_Slice = createSlice({
@@ -31,6 +32,15 @@ const UI_Slice = createSlice({
     toggleNotificationModal: (state) => {
       state.NotificationModal = !state.NotificationModal;
     },
+    openEditProfile: (state) => {
+      state.isEditProfileOpen = true;
+    },
+    closeEditProfile: (state) => {
+      state.isEditProfileOpen = false;
+    },
+    toggleEditProfile: (state) => {
+      state.isEditProfileOpen = !state.isEditProfileOpen;
+    },
   },
 });
 
@@ -42,6 +52,9 @@ export const {
   openNotificationModal,
   closeNotificationModal,
   toggleNotificationModal,
+  openEditProfile,
+  closeEditProfile,
+  toggleEditProfile,
 } = UI_Slice.actions;
 
 export default UI_Slice.reducer;

@@ -59,7 +59,7 @@ function App() {
   }
 
   return (
-    <div className="h-screen bg-white-background flex overflow-x-hidden scrollbar-custom flex-col">
+    <div className="h-screen bg-twitter-white flex overflow-x-hidden scrollbar-custom flex-col">
       <BrowserRouter>
         <Navbar />
         <Routes>

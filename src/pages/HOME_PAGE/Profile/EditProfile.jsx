@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useUpdateProfile } from "../../../hooks/useUpdateProfile";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useQueryClient } from "@tanstack/react-query";
+import { SquareX } from "lucide-react";
+import { closeEditProfile } from "../../../features/UI_Slice/UI_Slice";
 
 function EditProfile() {
   const queryClient = useQueryClient();
   const { mutateAsync, isPending } = useUpdateProfile();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -227,6 +230,14 @@ function EditProfile() {
             >
               {isPending ? "Saving..." : "Save Changes"}
             </button>
+            <div onClick={() => dispatch(closeEditProfile())}>
+              <SquareX
+                color="red"
+                size={30}
+                className="cursor-pointer"
+                strokeWidth={2}
+              />
+            </div>
           </div>
         </div>
 
