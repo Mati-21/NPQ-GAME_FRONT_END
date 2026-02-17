@@ -1,12 +1,15 @@
 import { useSelector } from "react-redux";
 import { useAddFriend } from "../../../hooks/useAddFriend";
 
-function SearchResult({ searchedUsers = [] }) {
+function SearchResult({ searchedUsers = [], Clearvalue }) {
   const user = useSelector((state) => state.auth.user);
+  // const socket = getSocket();
+
   const { mutate, isLoading } = useAddFriend();
 
   function handleAddFriend(userId) {
     mutate(userId);
+    Clearvalue();
   }
 
   return (

@@ -9,10 +9,52 @@ import PlayWithFriend from "./TabbedComponent/PlayWithFriend.jsx";
 import TopNavigation from "./TopNavigation/TopNavigation.jsx";
 import { useState } from "react";
 import ListofFriends from "./TabbedComponent/ListofFriends.jsx";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getSocket } from "../../utils/socket.js";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addFriend,
+  addFriendRequest,
+  Unfriend,
+} from "../../features/Auth/authSlice.js";
 
 function Home() {
   const [activeTabLocal, setActiveTabLocal] = useState("none");
+  const user = useSelector((state) => state.auth.user);
+  const socket = getSocket();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user?._id) {
+      socket.emit("user-loggedIn", user._id);
+    }
+  }, [socket, user?._id]);
+
+  useEffect(() => {
+    const handleBack = (data) => {
+      dispatch(addFriendRequest(data.senderId));
+    };
+
+    const handleNewFriend = (data) => {
+      console.log(data.receiverId);
+      dispatch(addFriend(data.receiverId));
+    };
+
+    const handleUnfriend = (data) => {
+      console.log("unfriend", data);
+      dispatch(Unfriend(data.userId));
+    };
+
+    socket.on("back", handleBack);
+    socket.on("new-friend", handleNewFriend);
+    socket.on("unfriend", handleUnfriend);
+
+    return () => {
+      socket.off("back", handleBack);
+      socket.off("new-friend", handleNewFriend);
+      socket.off("unfriend", handleUnfriend);
+    };
+  }, [socket, dispatch]);
 
   return (
     <div className="flex-1 bg-white-background pb-4 overflow-y-auto flex flex-col">

@@ -6,11 +6,12 @@ export const useAcceptFriend = () => {
 
   return useMutation({
     mutationFn: acceptFriendRequest,
-    onSuccess: (data, friendId) => {
+    onSuccess: (data) => {
       console.log(data);
 
       // Refresh authenticated user
       queryClient.invalidateQueries({ queryKey: ["auth"] });
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
     },
     onError: (error) => {
       console.error("Failed to accept friend:", error);

@@ -22,6 +22,26 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = "";
     },
+
+    addFriendRequest: (state, action) => {
+      state.user.friendRequests.received = [
+        ...state.user.friendRequests.received,
+        action.payload,
+      ];
+    },
+    addFriend: (state, action) => {
+      state.user.friends = [...state.user.friends, action.payload];
+    },
+
+    Unfriend: (state, action) => {
+      const removeId = action.payload;
+      console.log(removeId);
+      const arrayOFIds = state.user.friends;
+      const newFriends = arrayOFIds.filter((id) => id !== removeId);
+
+      state.user.friends = [...newFriends];
+    },
+
     logout: (state) => {
       state.user = null;
 
@@ -30,6 +50,13 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setError, clearError, logout } =
-  authSlice.actions;
+export const {
+  setCredentials,
+  setError,
+  clearError,
+  logout,
+  addFriend,
+  Unfriend,
+  addFriendRequest,
+} = authSlice.actions;
 export default authSlice.reducer;

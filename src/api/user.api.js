@@ -23,6 +23,12 @@ export const loginUser = async (data) => {
   return res.data;
 };
 
+//logout user
+
+export const logoutUser = async () => {
+  await axiosInstance.post("/auth/logout");
+};
+
 // Fetch online user details API call
 export const fetchOnlineUsers = async () => {
   const res = await axiosInstance.get("/user/onlineusers", {
@@ -46,7 +52,7 @@ export const checkAuth = async () => {
 };
 
 export const fetchSearchUsers = async (query) => {
-  const res = await axiosInstance.get(`/user/searchuser?q=${query}`);
+  const res = await axiosInstance.get(`/user/searchuser?query=${query}`);
   return res.data;
 };
 
@@ -59,7 +65,6 @@ export const getSomeUsers = async (usersId) => {
 
 // get friends
 export const getFriends = async (FriendsId) => {
-  console.log("from Gete Freinds");
   const res = await axiosInstance.post("/user/getFriends", {
     FriendsId,
   });

@@ -25,12 +25,19 @@ function SearchComponent({ InpRef }) {
     searchedUsers = [];
   }
 
+  const Clearvalue = () => {
+    if (InpRef.current) {
+      InpRef.current.value = "";
+      setQuery(""); // also clear the search query state
+    }
+  };
+
   return (
     <div className="relative shadow-all bg-white rounded-full py-2 w-sm px-6 flex gap-2">
       <input
         type="text"
         placeholder="Search for a user"
-        className="flex-1 outline-none"
+        className="flex-1 outline-none "
         onChange={handleChange}
         ref={InpRef}
       />
@@ -40,7 +47,7 @@ function SearchComponent({ InpRef }) {
       {isLoading && <p className="text-sm mt-2">Searching...</p>}
 
       {searchedUsers.length > 0 && (
-        <SearchResult searchedUsers={searchedUsers} />
+        <SearchResult searchedUsers={searchedUsers} Clearvalue={Clearvalue} />
       )}
     </div>
   );

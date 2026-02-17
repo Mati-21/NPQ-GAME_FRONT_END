@@ -10,9 +10,12 @@ import {
 } from "../features/UI_Slice/UI_Slice";
 import Notification from "../pages/HOME_PAGE/Notification/Notification";
 
+import { useLogout } from "../hooks/useLogout";
+
 function Navbar() {
   const location = useLocation();
   const { pathname } = location;
+  const { mutate: logoutS } = useLogout();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -25,6 +28,7 @@ function Navbar() {
 
   // handle logout
   const handleLogout = () => {
+    logoutS();
     disconnectSocket();
     dispatch(logout());
     navigate("/login", { replace: true });
@@ -75,7 +79,11 @@ function Navbar() {
                 to="/profile"
                 className="w-12 h-12 overflow-hidden shadow-all rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold"
               >
-                <img src={user.avatar} alt="" className="h-full w-full object-cover" />
+                <img
+                  src={user.avatar}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
               </Link>
               <div className="flex flex-col gap-0 text-black">
                 <span className="font-medium">{user.email}</span>

@@ -6,9 +6,9 @@ function FriendRequest() {
   const user = useSelector((state) => state.auth.user);
   const requestIds = user?.friendRequests?.received ?? [];
 
-  
-
   const { data: users, isLoading } = useGetRequests(requestIds);
+  console.log(users);
+  console.log("raw Id", requestIds);
 
   const acceptFriendMutation = useAcceptFriend();
 
