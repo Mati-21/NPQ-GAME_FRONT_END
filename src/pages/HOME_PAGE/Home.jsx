@@ -57,11 +57,11 @@ function Home() {
   }, [socket, dispatch]);
 
   useEffect(() => {
-    const handleNotification = () => {
-
+    const handleNotification = (notification) => {
+      console.log(notification);
     };
-    
-    socket.on("friend-request", handleFriendRequest);
+
+    socket.on("new-notification", handleNotification);
   }, [socket]);
 
   return (
