@@ -31,7 +31,7 @@ function Home() {
   }, [socket, user?._id]);
 
   useEffect(() => {
-    const handleBack = (data) => {
+    const handleFriendRequest = (data) => {
       dispatch(addFriendRequest(data.senderId));
     };
 
@@ -45,16 +45,24 @@ function Home() {
       dispatch(Unfriend(data.userId));
     };
 
-    socket.on("back", handleBack);
+    socket.on("friend-request", handleFriendRequest);
     socket.on("new-friend", handleNewFriend);
     socket.on("unfriend", handleUnfriend);
 
     return () => {
-      socket.off("back", handleBack);
+      socket.off("friend-request", handleFriendRequest);
       socket.off("new-friend", handleNewFriend);
       socket.off("unfriend", handleUnfriend);
     };
   }, [socket, dispatch]);
+
+  useEffect(() => {
+    const handleNotification = () => {
+
+    };
+    
+    socket.on("friend-request", handleFriendRequest);
+  }, [socket]);
 
   return (
     <div className="flex-1 bg-white-background pb-4 overflow-y-auto flex flex-col">
