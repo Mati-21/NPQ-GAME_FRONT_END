@@ -15,6 +15,8 @@ import { logout, setCredentials } from "./features/Auth/authSlice.js";
 import { useQuery } from "@tanstack/react-query";
 import { checkAuth } from "./api/user.api.js";
 import Profile from "./pages/HOME_PAGE/Profile/Profile.jsx";
+import LobbyPage from "./pages/Game_Pages/LobbyPage.jsx";
+import GameSessionPage from "./pages/Game_Pages/GameSessionPage.jsx";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -95,6 +97,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/lobby"
+            element={
+              <ProtectedRoute>
+                <LobbyPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Game"
+            element={
+              <ProtectedRoute>
+                <GameSessionPage />
               </ProtectedRoute>
             }
           />
