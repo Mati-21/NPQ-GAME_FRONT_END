@@ -56,10 +56,22 @@ function ChatComponent() {
       tag: "Sender",
       message: "really",
     },
+    {
+      tag: "Sender",
+      message: "Where have you been",
+    },
+    {
+      tag: "receiver",
+      message: "i was hospitaziled after turamatized by teketel ",
+    },
+    {
+      tag: "Sender",
+      message: "really",
+    },
   ];
   return (
-    <div className="flex-1 bg shadow-all flex flex-col p-2">
-      <ul className="flex flex-col gap-2 bg-slate-200 h-[500px] flex-1 overflow-y-auto">
+    <div className="h-full flex-1  bg shadow-all flex flex-col p-2 bg-yellow-200  ">
+      <ul className="flex flex-col gap-2 bg-slate-200 h-full flex-1 overflow-y-auto">
         {chats.map((chat, i) => (
           <li
             key={i}
@@ -73,7 +85,6 @@ function ChatComponent() {
           </li>
         ))}
       </ul>
-      <div>input</div>
     </div>
   );
 }
