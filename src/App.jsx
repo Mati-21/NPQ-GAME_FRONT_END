@@ -17,9 +17,11 @@ import { checkAuth } from "./api/user.api.js";
 import Profile from "./pages/HOME_PAGE/Profile/Profile.jsx";
 import LobbyPage from "./pages/Game_Pages/LobbyPage.jsx";
 import GameSessionPage from "./pages/Game_Pages/GameSessionPage.jsx";
+import ResignConfirmationPage from "./pages/Game_Pages/ResignConfirmationPage.jsx";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isQuitGameModalOpen } = useSelector((state) => state.UI_Slice);
   // console.log(isAuthenticated);
 
   const dispatch = useDispatch();
@@ -64,6 +66,7 @@ function App() {
     <div className="h-screen bg-twitter-white flex overflow-x-hidden scrollbar-custom flex-col">
       <BrowserRouter>
         <Navbar />
+        {isQuitGameModalOpen && <ResignConfirmationPage />}
         <Routes>
           {/* Public routes */}
           <Route
