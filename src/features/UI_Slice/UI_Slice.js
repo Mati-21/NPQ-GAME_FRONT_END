@@ -5,6 +5,7 @@ const initialState = {
   onlineUsers: [],
   NotificationModal: false,
   isEditProfileOpen: false,
+  isQuitGameModalOpen: false,
 };
 
 const UI_Slice = createSlice({
@@ -41,6 +42,13 @@ const UI_Slice = createSlice({
     toggleEditProfile: (state) => {
       state.isEditProfileOpen = !state.isEditProfileOpen;
     },
+    openQuitModal: (state) => {
+      console.log("Something");
+      state.isQuitGameModalOpen = true;
+    },
+    closeQuitModal: (state) => {
+      state.isQuitGameModalOpen = false;
+    },
   },
 });
 
@@ -55,6 +63,8 @@ export const {
   openEditProfile,
   closeEditProfile,
   toggleEditProfile,
+  openQuitModal,
+  closeQuitModal,
 } = UI_Slice.actions;
 
 export default UI_Slice.reducer;
