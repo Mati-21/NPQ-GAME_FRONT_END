@@ -18,7 +18,7 @@ function Profile() {
         {/* cover Picture */}
         <div className="flex flex-col justify-center w-full h-96 overflow-hidden">
           <img
-            src={user.avatar}
+            src={user.avatar || "/user.png"}
             alt=""
             className="w-full h-full object-cover"
           />
@@ -28,12 +28,11 @@ function Profile() {
         <div className="flex flex-col gap-2  w-full px-6 pb-2 h-full  scrollbar-custom py-4">
           <h2 className="font-semibold   text-xs">Name</h2>
           <h1 className="text-xs border-b border-gray-300 pb-1">
-            {user.firstName ? user.firstName : "N/A"}{" "}
-            {user.lastName ? user.lastName : "N/A"}
+            {user.firstName || user.lastName ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "N/A"}
           </h1>
           <h2 className="font-semibold  mt-2 text-xs">Email</h2>
           <h1 className="text-xs border-b border-gray-300 pb-1">
-            {user.email}
+            {user.email || "N/A"}
           </h1>
           <h2 className="font-semibold  mt-2 text-xs">About Me</h2>
           <p className="text-xs border-b border-gray-300 pb-1">
@@ -55,11 +54,14 @@ function Profile() {
           <div className=" flex items-center gap-2 mt-4 border-b border-gray-300 pb-1">
             <MapPin size={20} />{" "}
             <p className="text-xs font-semibold">
-              {user.location.country ? user.location.country : "N/A"},{" "}
-              {user.location.region ? user.location.region : "N/A"}
+              {user.location?.country || user.location?.region
+                ? `${user.location.country || "N/A"}, ${user.location.region || "N/A"}`
+                : "N/A"}
             </p>
           </div>
         </div>
+
+
       </div>
 
       {/*  */}

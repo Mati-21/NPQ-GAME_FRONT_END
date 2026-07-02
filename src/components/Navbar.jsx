@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/Auth/authSlice";
 
-import { disconnectSocket } from "../utils/socket";
+import { disconnectSocket, getSocket } from "../utils/socket";
 import {
   resetActiveTab,
   toggleNotificationModal,
@@ -11,6 +11,7 @@ import {
 import Notification from "../pages/HOME_PAGE/Notification/Notification";
 
 import { useLogout } from "../hooks/useLogout";
+import toast from "react-hot-toast";
 
 function Navbar() {
   const location = useLocation();
@@ -19,6 +20,7 @@ function Navbar() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const socket = getSocket();
 
   // get logged-in user from redux
   const user = useSelector((state) => state.auth.user);
@@ -26,8 +28,31 @@ function Navbar() {
     (state) => state.UI_Slice.NotificationModal,
   );
 
+  const handleNavigationGuard = (event) => {
+    const activeGameId = sessionStorage.getItem("activeGameId");
+    if (pathname === "/Game" && activeGameId) {
+      event.preventDefault();
+      toast.error("Resign the game first if you want to leave this session.");
+    }
+  };
+
   // handle logout
   const handleLogout = () => {
+    const activeGameId = sessionStorage.getItem("activeGameId");
+
+    if (pathname === "/Game" && activeGameId && user?._id) {
+      socket?.emit("resign-game", { gameId: activeGameId, playerId: user._id });
+      toast.success("You resigned the active game. Logging out...");
+
+      setTimeout(() => {
+        logoutS();
+        disconnectSocket();
+        dispatch(logout());
+        navigate("/login", { replace: true });
+      }, 800);
+      return;
+    }
+
     logoutS();
     disconnectSocket();
     dispatch(logout());
@@ -39,7 +64,10 @@ function Navbar() {
       <div className="flex justify-between items-center">
         {/* Logo */}
         <Link
-          onClick={() => dispatch(resetActiveTab())}
+          onClick={(event) => {
+            dispatch(resetActiveTab());
+            handleNavigationGuard(event);
+          }}
           to="/"
           className="cursor-pointer"
         >
@@ -77,17 +105,22 @@ function Navbar() {
               {/* Avatar */}
               <Link
                 to="/profile"
+                onClick={handleNavigationGuard}
                 className="w-12 h-12 overflow-hidden shadow-all rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold"
               >
                 <img
-                  src={user.avatar}
+                  src={user.avatar || "/user.png"}
                   alt=""
                   className="h-full w-full object-cover"
                 />
               </Link>
               <div className="flex flex-col gap-0 text-black">
-                <span className="font-medium">{user.email}</span>
-                <span className="text-xs">{user.username}</span>
+                <span className="font-medium">
+                  {user.firstName || user.lastName
+                    ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+                    : "N/A"}
+                </span>
+                <span className="text-xs text-gray-500">{user.username}</span>
               </div>
 
               {/* Notification */}

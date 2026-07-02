@@ -39,33 +39,51 @@ const UserTimeline = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
           <div className="bg-indigo-50 p-4 rounded-lg shadow hover:shadow-md transition">
             <p className="text-gray-500 text-sm">Total Games Played</p>
-            <p className="text-xl font-semibold text-indigo-700">120</p>
+            <p className="text-xl font-semibold text-indigo-700">
+              {user.stats?.totalGames !== undefined ? user.stats.totalGames : "N/A"}
+            </p>
           </div>
           <div className="bg-green-50 p-4 rounded-lg shadow hover:shadow-md transition">
             <p className="text-gray-500 text-sm">Total Wins</p>
-            <p className="text-xl font-semibold text-green-700">85</p>
+            <p className="text-xl font-semibold text-green-700">
+              {user.stats?.wins !== undefined ? user.stats.wins : "N/A"}
+            </p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg shadow hover:shadow-md transition">
             <p className="text-gray-500 text-sm">Win Rate</p>
-            <p className="text-xl font-semibold text-yellow-700">71%</p>
+            <p className="text-xl font-semibold text-yellow-700">
+              {user.stats?.totalGames > 0 && user.stats?.wins !== undefined
+                ? `${Math.round((user.stats.wins / user.stats.totalGames) * 100)}%`
+                : "N/A"}
+            </p>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg shadow hover:shadow-md transition">
             <p className="text-gray-500 text-sm">Best Score (Fewest Guesses)</p>
-            <p className="text-xl font-semibold text-purple-700">3</p>
+            <p className="text-xl font-semibold text-purple-700">
+              {user.stats?.bestScore !== undefined ? user.stats.bestScore : "N/A"}
+            </p>
           </div>
           <div className="bg-pink-50 p-4 rounded-lg shadow hover:shadow-md transition">
             <p className="text-gray-500 text-sm">Average Guesses/Game</p>
-            <p className="text-xl font-semibold text-pink-700">5</p>
+            <p className="text-xl font-semibold text-pink-700">
+              {user.stats?.avgGuesses !== undefined ? user.stats.avgGuesses : "N/A"}
+            </p>
           </div>
           <div className="bg-blue-50 p-4 rounded-lg shadow hover:shadow-md transition">
             <p className="text-gray-500 text-sm">Longest Winning Streak</p>
-            <p className="text-xl font-semibold text-blue-700">12</p>
+            <p className="text-xl font-semibold text-blue-700">
+              {user.stats?.bestWinStreak !== undefined ? user.stats.bestWinStreak : "N/A"}
+            </p>
           </div>
           <div className="bg-orange-50 p-4 rounded-lg shadow hover:shadow-md transition sm:col-span-2">
             <p className="text-gray-500 text-sm">Leaderboard Rank</p>
-            <p className="text-xl font-semibold text-orange-700">#7</p>
+            <p className="text-xl font-semibold text-orange-700">
+              {user.stats?.rank !== undefined ? `#${user.stats.rank}` : "N/A"}
+            </p>
           </div>
         </div>
+
+
       </div>
     </div>
   );

@@ -28,10 +28,10 @@ function TopNavigation({ setActiveTabLocal }) {
           List of Friends
         </div>
         <div
-          onClick={() => handleTabClick("play_With_Friend")}
+          onClick={() => handleTabClick("Game_Requests")}
           className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 duration-500"
         >
-          Play with a friend
+          Game Requests
         </div>
         <div
           onClick={() => handleTabClick("Game_History")}
@@ -43,7 +43,7 @@ function TopNavigation({ setActiveTabLocal }) {
           onClick={() => handleTabClick("Online_Users")}
           className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100"
         >
-          Online Users
+          Online Friends
         </div>
         <div
           onClick={() => handleTabClick("Friend_Request")}

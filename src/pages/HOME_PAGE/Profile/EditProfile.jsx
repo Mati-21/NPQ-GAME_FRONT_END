@@ -250,7 +250,7 @@ function EditProfile() {
                 <div className="mt-2 flex items-center gap-4">
                   <div className="h-20 w-20 rounded-full bg-gray-300 overflow-hidden border-2 border-gray-400">
                     <img
-                      src={profileImagePreview || formData.avatar}
+                      src={profileImagePreview || formData.avatar || "/user.png"}
                       alt="Profile"
                       className="h-full w-full object-cover"
                     />
