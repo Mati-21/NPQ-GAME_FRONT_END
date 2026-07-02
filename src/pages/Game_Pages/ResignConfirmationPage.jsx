@@ -1,11 +1,16 @@
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { closeQuitModal } from "../../features/UI_Slice/UI_Slice";
 
 function ResignConfirmationPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleClose = () => dispatch(closeQuitModal());
+
   return (
     <div
-      onClick={() => dispatch(closeQuitModal())}
+      onClick={handleClose}
       className="h-screen w-full z-50 absolute bg-black/80 flex justify-center items-center "
     >
       <div
@@ -16,10 +21,19 @@ function ResignConfirmationPage() {
           Do you really want to quit the game ?
         </h1>
         <div className="flex  justify-center gap-4">
-          <button className="px-8 py-1 rounded bg-blue-400 text-white font-bold cursor-pointer">
+          <button
+            onClick={handleClose}
+            className="px-8 py-1 rounded bg-blue-400 text-white font-bold cursor-pointer"
+          >
             No
           </button>
-          <button className="px-8 py-1 rounded bg-red-800 text-white font-bold cursor-pointer">
+          <button
+            onClick={() => {
+              handleClose();
+              navigate("/home");
+            }}
+            className="px-8 py-1 rounded bg-red-800 text-white font-bold cursor-pointer"
+          >
             Yes
           </button>
         </div>
