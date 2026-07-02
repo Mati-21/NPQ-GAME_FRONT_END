@@ -91,3 +91,20 @@ export const updateProfile = async (formData) => {
   const res = await axiosInstance.patch(`/user/updateProfile`, formData);
   return res.data;
 };
+
+export const fetchTopPlayers = async () => {
+  const res = await axiosInstance.get("/user/top-players");
+  return res.data.players;
+};
+
+export const cancelFriendRequest = async (userId) => {
+  const res = await axiosInstance.delete(`/friends/cancel/${userId}`);
+  return res.data;
+};
+
+export const rejectFriendRequest = async (userId) => {
+  const res = await axiosInstance.delete(`/friends/reject/${userId}`);
+  return res.data;
+};
+
+

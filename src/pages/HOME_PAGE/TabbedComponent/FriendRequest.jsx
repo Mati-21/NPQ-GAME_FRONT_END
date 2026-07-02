@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useGetRequests } from "../../../hooks/useGetRequests";
 import { useAcceptFriend } from "../../../hooks/useAcceptFriend";
+import { useRejectFriend } from "../../../hooks/useRejectFriend";
 
 function FriendRequest() {
   const user = useSelector((state) => state.auth.user);
@@ -11,6 +12,7 @@ function FriendRequest() {
   console.log("raw Id", requestIds);
 
   const acceptFriendMutation = useAcceptFriend();
+  const rejectFriendMutation = useRejectFriend();
 
   if (isLoading) return <p>Loading friend requests...</p>;
 
@@ -30,13 +32,20 @@ function FriendRequest() {
                   <div className="text-xs font-bold">{u.email}</div>
                 </div>
               </div>
-              <div>
+              <div className="flex gap-2">
                 <button
                   onClick={() => acceptFriendMutation.mutate(u._id)}
-                  className="bg-blue-500 px-4 py-2 rounded text-xs text-white font-bold cursor-pointer"
-                  disabled={acceptFriendMutation.isLoading}
+                  className="bg-blue-500 hover:bg-blue-600 transition px-4 py-2 rounded text-xs text-white font-bold cursor-pointer"
+                  disabled={acceptFriendMutation.isPending || acceptFriendMutation.isLoading}
                 >
-                  {acceptFriendMutation.isLoading ? "Accepting..." : "Accept"}
+                  {acceptFriendMutation.isPending || acceptFriendMutation.isLoading ? "Accepting..." : "Accept"}
+                </button>
+                <button
+                  onClick={() => rejectFriendMutation.mutate(u._id)}
+                  className="bg-red-500 hover:bg-red-600 transition px-4 py-2 rounded text-xs text-white font-bold cursor-pointer"
+                  disabled={rejectFriendMutation.isPending}
+                >
+                  {rejectFriendMutation.isPending ? "Rejecting..." : "Reject"}
                 </button>
               </div>
             </div>

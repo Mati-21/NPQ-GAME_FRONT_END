@@ -34,7 +34,7 @@ function Notification({ searchedUsers = [] }) {
           <div key={index} className="flex justify-between items-center">
             <div className="flex items-center gap-3 mb-3 last:mb-0">
               <img
-                src={searchedUser?.avatar}
+                src={searchedUser?.avatar || "/user.png"}
                 alt={searchedUser?.username}
                 className="w-8 h-8 rounded-full bg-amber-200"
               />

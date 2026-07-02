@@ -1,19 +1,24 @@
-// hooks/useUnfriend.js
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { unfriend } from "../api/user.api";
+import { useDispatch } from "react-redux";
+import { Unfriend } from "../features/Auth/authSlice";
+import toast from "react-hot-toast";
 
 export const useUnfriend = () => {
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   return useMutation({
     mutationFn: unfriend,
-    onSuccess: (data) => {
-      console.log(data);
-      // Refresh the authenticated user to update friends list
+    onSuccess: (data, friendId) => {
+      toast("User unfriended successfully", { icon: "👋" });
+      dispatch(Unfriend(friendId));
       queryClient.invalidateQueries({ queryKey: ["auth"] });
-
-      // Optionally, refresh friends data if using another query
-      queryClient.invalidateQueries({ queryKey: ["friend-requests"] });
+    },
+    onError: (err) => {
+      const message = err?.response?.data?.message || "Failed to unfriend";
+      toast.error(message);
     },
   });
 };
+

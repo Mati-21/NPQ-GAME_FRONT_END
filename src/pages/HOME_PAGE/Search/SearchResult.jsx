@@ -1,16 +1,12 @@
 import { useSelector } from "react-redux";
 import { useAddFriend } from "../../../hooks/useAddFriend";
+import { useCancelFriendRequest } from "../../../hooks/useCancelFriendRequest";
 
 function SearchResult({ searchedUsers = [], Clearvalue }) {
   const user = useSelector((state) => state.auth.user);
-  // const socket = getSocket();
 
-  const { mutate, isLoading } = useAddFriend();
-
-  function handleAddFriend(userId) {
-    mutate(userId);
-    Clearvalue();
-  }
+  const { mutate: sendRequest, isPending: isSending } = useAddFriend();
+  const { mutate: cancelRequest, isPending: isCancelling } = useCancelFriendRequest();
 
   return (
     <div className="absolute top-[120%] right-0 shadow-lg w-full rounded-md p-4 z-50 bg-white max-h-96 overflow-y-auto flex flex-col gap-2">
@@ -20,52 +16,69 @@ function SearchResult({ searchedUsers = [], Clearvalue }) {
         searchedUsers.map((searchedUser) => {
           const isFriend = user?.friends?.includes(searchedUser._id);
 
-          const isRequested = user?.friendRequests?.sent?.includes(
-            searchedUser._id,
-          );
+          // Check both DB state and optimistic Redux state
+          const isRequested =
+            user?.friendRequests?.sent?.includes(searchedUser._id);
 
-          const hasIncomingRequest = user?.friendRequests?.received?.includes(
-            searchedUser._id,
-          );
+          const hasIncomingRequest =
+            user?.friendRequests?.received?.includes(searchedUser._id);
+
+          const handleToggle = () => {
+            if (isRequested) {
+              cancelRequest(searchedUser._id);
+            } else {
+              sendRequest(searchedUser._id);
+            }
+          };
 
           return (
             <div
               key={searchedUser._id}
-              className="flex justify-between items-center hover:bg-gray-100"
+              className="flex justify-between items-center p-1 rounded hover:bg-gray-50"
             >
+              {/* Avatar + name */}
               <div className="flex items-center gap-3">
                 <img
-                  src={searchedUser.avatar}
+                  src={searchedUser.avatar || "/user.png"}
                   alt={searchedUser.username}
-                  className="w-8 h-8 rounded-full bg-amber-200"
+                  className="w-8 h-8 rounded-full bg-amber-200 object-cover"
                 />
-                <span className="text-black text-xs">
-                  {searchedUser.username}
-                </span>
+                <div>
+                  <p className="text-black text-sm font-medium">
+                    {searchedUser.username}
+                  </p>
+                  {searchedUser.firstName && (
+                    <p className="text-xs text-gray-400">
+                      {searchedUser.firstName} {searchedUser.lastName}
+                    </p>
+                  )}
+                </div>
               </div>
 
+              {/* Action button */}
               {isFriend ? (
-                <button className="text-xs p-2 rounded bg-gray-400 text-white cursor-pointer">
-                  Send Message
+                <button className="text-xs px-3 py-1.5 rounded bg-gray-300 text-gray-700 cursor-default">
+                  Friends
                 </button>
               ) : hasIncomingRequest ? (
-                <button className="text-xs p-2 rounded bg-blue-600 text-white cursor-pointer">
-                  Accept Request
-                </button>
-              ) : isRequested ? (
-                <button
-                  disabled
-                  className="text-xs p-2 rounded bg-gray-300 text-gray-700 cursor-not-allowed"
-                >
-                  Requested
+                <button className="text-xs px-3 py-1.5 rounded bg-green-500 text-white font-semibold cursor-pointer hover:bg-green-600 transition">
+                  Accept
                 </button>
               ) : (
                 <button
-                  onClick={() => handleAddFriend(searchedUser._id)}
-                  disabled={isLoading}
-                  className="text-xs p-2 rounded bg-blue-600 text-white font-semibold cursor-pointer"
+                  onClick={handleToggle}
+                  disabled={isSending || isCancelling}
+                  className={`text-xs px-3 py-1.5 rounded font-semibold cursor-pointer transition ${
+                    isRequested
+                      ? "bg-gray-200 text-gray-600 hover:bg-red-100 hover:text-red-600"
+                      : "bg-blue-600 text-white hover:bg-blue-700"
+                  }`}
                 >
-                  {isLoading ? "Sending..." : "Add Friend"}
+                  {isSending || isCancelling
+                    ? "..."
+                    : isRequested
+                    ? "Requested"
+                    : "Add Friend"}
                 </button>
               )}
             </div>
@@ -77,3 +90,4 @@ function SearchResult({ searchedUsers = [], Clearvalue }) {
 }
 
 export default SearchResult;
+
