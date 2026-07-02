@@ -18,6 +18,7 @@ import Profile from "./pages/HOME_PAGE/Profile/Profile.jsx";
 import LobbyPage from "./pages/Game_Pages/LobbyPage.jsx";
 import GameSessionPage from "./pages/Game_Pages/GameSessionPage.jsx";
 import ResignConfirmationPage from "./pages/Game_Pages/ResignConfirmationPage.jsx";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -64,6 +65,7 @@ function App() {
 
   return (
     <div className="h-screen bg-twitter-white flex overflow-x-hidden scrollbar-custom flex-col">
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       <BrowserRouter>
         <Navbar />
         {isQuitGameModalOpen && <ResignConfirmationPage />}

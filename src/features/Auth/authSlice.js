@@ -4,6 +4,7 @@ const initialState = {
   user: null,
   error: "",
   isAuthenticated: false,
+  onlineUsers: [],
 };
 
 const authSlice = createSlice({
@@ -19,18 +20,34 @@ const authSlice = createSlice({
       state.error = action.payload;
       state.isAuthenticated = false;
     },
+    setOnlineUsers: (state, action) => {
+      console.log(action.payload);
+      state.onlineUsers = [...state.onlineUsers, ...action.payload];
+    },
+
     clearError: (state) => {
       state.error = "";
     },
 
     addFriendRequest: (state, action) => {
-      state.user.friendRequests.received = [
-        ...state.user.friendRequests.received,
-        action.payload,
-      ];
+      if (!state.user.friendRequests.received.includes(action.payload)) {
+        state.user.friendRequests.received = [
+          ...state.user.friendRequests.received,
+          action.payload,
+        ];
+      }
     },
     addFriend: (state, action) => {
-      state.user.friends = [...state.user.friends, action.payload];
+      const friendId = action.payload;
+      if (!state.user.friends.includes(friendId)) {
+        state.user.friends.push(friendId);
+      }
+      state.user.friendRequests.sent = state.user.friendRequests.sent.filter(
+        (id) => id !== friendId
+      );
+      state.user.friendRequests.received = state.user.friendRequests.received.filter(
+        (id) => id !== friendId
+      );
     },
 
     Unfriend: (state, action) => {
@@ -41,6 +58,21 @@ const authSlice = createSlice({
 
       state.user.friends = [...newFriends];
     },
+
+    removeSentRequest: (state, action) => {
+      const userId = action.payload;
+      state.user.friendRequests.sent = state.user.friendRequests.sent.filter(
+        (id) => id !== userId
+      );
+    },
+
+    removeReceivedRequest: (state, action) => {
+      const senderId = action.payload;
+      state.user.friendRequests.received = state.user.friendRequests.received.filter(
+        (id) => id !== senderId
+      );
+    },
+
 
     logout: (state) => {
       state.user = null;
@@ -58,5 +90,7 @@ export const {
   addFriend,
   Unfriend,
   addFriendRequest,
+  removeSentRequest,
+  removeReceivedRequest,
 } = authSlice.actions;
 export default authSlice.reducer;

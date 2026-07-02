@@ -6,7 +6,9 @@ const initialState = {
   NotificationModal: false,
   isEditProfileOpen: false,
   isQuitGameModalOpen: false,
+  gameRequests: [], // incoming game requests
 };
+
 
 const UI_Slice = createSlice({
   name: "ui",
@@ -49,6 +51,20 @@ const UI_Slice = createSlice({
     closeQuitModal: (state) => {
       state.isQuitGameModalOpen = false;
     },
+    addGameRequest: (state, action) => {
+      // avoid duplicates by requestId
+      const exists = state.gameRequests.find(
+        (r) => r.requestId === action.payload.requestId
+      );
+      if (!exists) {
+        state.gameRequests.push(action.payload);
+      }
+    },
+    removeGameRequest: (state, action) => {
+      state.gameRequests = state.gameRequests.filter(
+        (r) => r.requestId !== action.payload
+      );
+    },
   },
 });
 
@@ -65,6 +81,8 @@ export const {
   toggleEditProfile,
   openQuitModal,
   closeQuitModal,
+  addGameRequest,
+  removeGameRequest,
 } = UI_Slice.actions;
 
 export default UI_Slice.reducer;
