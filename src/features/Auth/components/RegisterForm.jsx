@@ -7,7 +7,7 @@ import { registerSchema } from "../../../utils/RegistrationSchema";
 import { useRegister } from "../../../hooks/useRegister";
 
 function RegisterForm() {
-  const { mutate, isLoading } = useRegister();
+  const { mutate, isPending } = useRegister();
 
   const {
     register,
@@ -24,7 +24,7 @@ function RegisterForm() {
   };
 
   return (
-    <div className="min-w-md mt-10 bg-white dark:bg-slate-800 self-start p-6 shadow-all rounded-xl">
+    <div className="w-full max-w-md mx-4 sm:mx-0 sm:min-w-md mt-8 sm:mt-10 bg-white dark:bg-slate-800 self-start p-6 shadow-all rounded-xl">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
         <h1 className="text-center text-2xl font-bold mt-2 font-inter tracking-widest dark:text-white">
           Register
@@ -32,7 +32,7 @@ function RegisterForm() {
 
         {/* inputs */}
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Input
             label="First Name:"
             placeholder="First name"
@@ -61,7 +61,7 @@ function RegisterForm() {
           error={errors.username?.message}
         />
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Input
             label="Password:"
             type="password"
@@ -79,7 +79,7 @@ function RegisterForm() {
           />
         </div>
 
-        <Button label={isLoading ? "Signing up..." : "Sign up"} type="submit" />
+        <Button label={isPending ? "Signing up..." : "Sign up"} isLoading={isPending} type="submit" />
 
         <p className="text-center dark:text-slate-300">
           Already have an account?{" "}

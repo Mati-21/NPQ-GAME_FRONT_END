@@ -194,10 +194,10 @@ function EditProfile() {
   if (!user) return <p className="p-4">Loading user data...</p>;
 
   return (
-    <div className="flex-1 flex p-4">
+    <div className="flex-1 flex p-3 sm:p-4 overflow-auto">
       <form onSubmit={handleSubmit} className="p-4 w-full flex flex-col gap-4">
         {/* Save button and message */}
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
           <h2 className="text-xl font-semibold">Edit Profile</h2>
           <div className="flex items-center gap-4 ">
             {saveMessage && (
@@ -241,7 +241,7 @@ function EditProfile() {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* Left side */}
           <div className="flex-1 shadow-all p-4 rounded-lg">
             <div className="flex flex-col gap-4">
@@ -277,7 +277,7 @@ function EditProfile() {
               </div>
 
               {/* First and Last Name */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex flex-col gap-1 flex-1">
                   <label htmlFor="firstName" className="text-sm font-medium">
                     First Name:
@@ -309,7 +309,7 @@ function EditProfile() {
               </div>
 
               {/* Email and Birth Date */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex flex-col gap-1 flex-1">
                   <label htmlFor="email" className="text-sm font-medium">
                     Email:
@@ -377,7 +377,7 @@ function EditProfile() {
           <div className="flex-1 shadow-all p-4 rounded-lg">
             <div className="flex flex-col gap-6">
               {/* Country and Region */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex flex-col gap-1 flex-1">
                   <label htmlFor="country" className="text-sm font-medium">
                     Country:

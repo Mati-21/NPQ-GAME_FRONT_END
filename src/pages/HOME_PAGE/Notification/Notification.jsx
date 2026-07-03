@@ -56,7 +56,13 @@ function Notification() {
   return (
     <div
       ref={modalRef}
-      className="absolute top-[120%] right-0 shadow-2xl border border-gray-100 dark:border-slate-700 rounded-xl p-4 z-50 bg-white dark:bg-slate-800 max-h-96 overflow-y-auto flex flex-col gap-2 w-96 text-black dark:text-white transition-all duration-300"
+      className="
+        fixed right-2 left-2 top-16
+        sm:absolute sm:left-auto sm:right-0 sm:top-[120%]
+        shadow-2xl border border-gray-100 dark:border-slate-700 rounded-xl p-4 z-[999]
+        bg-white dark:bg-slate-800 max-h-96 overflow-y-auto flex flex-col gap-2
+        sm:w-96 text-black dark:text-white transition-all duration-300
+      "
       onClick={(e) => e.stopPropagation()} // 🔥 key line
     >
       <div className="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-slate-700 mb-2">

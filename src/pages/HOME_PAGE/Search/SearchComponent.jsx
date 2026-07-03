@@ -33,16 +33,16 @@ function SearchComponent({ InpRef }) {
   };
 
   return (
-    <div className="relative shadow-all bg-white rounded-full py-2 w-sm px-6 flex gap-2">
+    <div className="relative shadow-all bg-white dark:bg-slate-700 rounded-full py-2 w-full md:w-72 lg:w-80 px-4 sm:px-6 flex gap-2">
       <input
         type="text"
         placeholder="Search for a user"
-        className="flex-1 outline-none "
+        className="flex-1 outline-none text-sm dark:bg-transparent dark:text-slate-100 dark:placeholder-slate-400"
         onChange={handleChange}
         ref={InpRef}
       />
 
-      <Search className="cursor-pointer" />
+      <Search size={18} className="cursor-pointer dark:text-slate-300 shrink-0" />
 
       {isLoading && <p className="text-sm mt-2">Searching...</p>}
 

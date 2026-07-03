@@ -45,7 +45,7 @@ const OnlineUsers = () => {
 
   if (isLoading) {
     return (
-      <div className="mx-14 py-6 text-sm text-gray-500">
+      <div className="mx-4 sm:mx-8 md:mx-12 py-6 text-sm text-gray-500">
         Loading online friends...
       </div>
     );
@@ -53,14 +53,14 @@ const OnlineUsers = () => {
 
   if (isError) {
     return (
-      <div className="mx-14 py-6 text-sm text-red-500">
+      <div className="mx-4 sm:mx-8 md:mx-12 py-6 text-sm text-red-500">
         Failed to load online friends.
       </div>
     );
   }
 
   return (
-    <div className="mx-14 my-2">
+    <div className="mx-4 sm:mx-8 md:mx-12 my-2">
       <h2 className="text-xl font-semibold mb-4 tracking-widest">
         Online Friends ({onlineFriends.length})
       </h2>

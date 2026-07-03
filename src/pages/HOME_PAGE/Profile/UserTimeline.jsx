@@ -10,16 +10,14 @@ const UserTimeline = () => {
   return (
     <div className="flex-1 flex">
       {/* User stat */}
-      <div className="flex-1 mx-auto p-6 bg-whi shadow-lg rounded-xl">
+      <div className="flex-1 p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between px-2 mb-6 mt-6 ">
-          <div className="flex items-center space-x-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">
-                Player: {user.firstName || user.username || "N/A"}
-              </h1>
-              <p className="text-sm text-gray-500">Game Stat</p>
-            </div>
+        <div className="flex items-center justify-between px-0 sm:px-2 mb-4 sm:mb-6 mt-4 sm:mt-6 gap-2">
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-800 dark:text-slate-100 truncate">
+              Player: {user.firstName || user.username || "N/A"}
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Game Stats</p>
           </div>
 
           <div className="flex justify-around bg-white shadow-all  text-black w-32 py-2 rounded-full ">

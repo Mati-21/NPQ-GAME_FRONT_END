@@ -38,6 +38,8 @@
 /* Tailwind v4 theme     */
 /* ===================== */
 @theme {
+  --color-purple-primary: var(--color-purple-primary);
+  --color-purple-secondary: var(--color-purple-secondary);
   --shadow-soft-purple: var(--shadow-soft-purple);
   --shadow-deep-purple: var(--shadow-deep-purple);
   --shadow-neon-purple: var(--shadow-neon-purple);
@@ -79,5 +81,14 @@
 
   .scrollbar-custom::-webkit-scrollbar-corner {
     background: transparent;
+  }
+
+  /* Hide scrollbar but keep scroll behaviour */
+  .scrollbar-none {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
   }
 }

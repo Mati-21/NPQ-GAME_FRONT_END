@@ -30,7 +30,7 @@ function TopPlayers() {
 
   if (loading) {
     return (
-      <div className="px-14 mt-8 space-y-3">
+      <div className="px-4 sm:px-8 md:px-12 mt-4 sm:mt-8 space-y-3">
         <div className="h-8 w-48 bg-gray-200 dark:bg-slate-700 animate-pulse rounded-lg" />
         {[1, 2, 3].map((i) => (
           <div key={i} className="h-16 bg-gray-100 dark:bg-slate-800 animate-pulse rounded-xl" />
@@ -41,7 +41,7 @@ function TopPlayers() {
 
   if (topPlayers.length === 0) {
     return (
-      <div className="px-14 mt-10 flex flex-col items-center gap-3 text-center">
+      <div className="px-4 sm:px-8 md:px-12 mt-8 sm:mt-10 flex flex-col items-center gap-3 text-center">
         <Trophy size={48} className="text-gray-300 dark:text-slate-600" />
         <h2 className="text-2xl font-semibold text-gray-400 dark:text-slate-500">No Rankings Yet</h2>
         <p className="text-gray-400 dark:text-slate-500 text-sm max-w-xs">
@@ -52,7 +52,7 @@ function TopPlayers() {
   }
 
   return (
-    <div className="px-14 mt-8">
+    <div className="px-4 sm:px-8 md:px-12 mt-4 sm:mt-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <Trophy size={26} className="text-amber-500" />

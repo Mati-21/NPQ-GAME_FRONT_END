@@ -15,7 +15,7 @@ function ListofFriends() {
 
   if (isLoading) {
     return (
-      <div className="mx-14 py-6 text-center text-sm text-gray-500">
+      <div className="mx-4 sm:mx-8 md:mx-12 py-6 text-center text-sm text-gray-500">
         Loading friends...
       </div>
     );
@@ -23,14 +23,14 @@ function ListofFriends() {
 
   if (isError) {
     return (
-      <div className="mx-14 py-6 text-center text-sm text-red-500">
+      <div className="mx-4 sm:mx-8 md:mx-12 py-6 text-center text-sm text-red-500">
         Failed to load friends
       </div>
     );
   }
 
   return (
-    <div className="mx-14 my-2">
+    <div className="mx-4 sm:mx-8 md:mx-12 my-2">
       <h2 className="text-xl font-semibold mb-4 tracking-widest">Friends</h2>
 
       {friends.length === 0 ? (

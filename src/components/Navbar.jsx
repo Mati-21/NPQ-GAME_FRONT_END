@@ -69,8 +69,8 @@ function Navbar() {
   };
 
   return (
-    <div className="w-screen px-20 bg-white dark:bg-slate-800 shadow-md p-3 text-white sticky top-0 z-50 border-b border-transparent dark:border-slate-700 transition-colors duration-300">
-      <div className="flex justify-between items-center">
+    <div className="w-screen px-4 sm:px-8 md:px-12 bg-white dark:bg-slate-800 shadow-md py-2.5 text-white sticky top-0 z-50 border-b border-transparent dark:border-slate-700 transition-colors duration-300">
+      <div className="flex justify-between items-center max-w-7xl mx-auto">
         {/* Logo */}
         <Link
           onClick={(event) => {
@@ -80,20 +80,20 @@ function Navbar() {
           to="/"
           className="cursor-pointer"
         >
-          <h1 className="text-2xl font-semibold font-inter tracking-widest text-black dark:text-white">
+          <h1 className="text-xl sm:text-2xl font-semibold font-inter tracking-widest text-black dark:text-white">
             NPQ
           </h1>
         </Link>
 
         {/* Right section */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {!user ? (
             // NOT logged in
             <>
               {pathname === "/login" && (
                 <Link
                   to="/register"
-                  className="bg-[#5959B3] text-white px-6 py-1 rounded-full font-semibold hover:opacity-90 transition-opacity"
+                  className="bg-[#5959B3] text-white px-4 sm:px-6 py-1 rounded-full font-semibold hover:opacity-90 transition-opacity text-sm"
                 >
                   Join us
                 </Link>
@@ -101,27 +101,27 @@ function Navbar() {
               {(pathname === "/register" || pathname === "/") && (
                 <Link
                   to="/login"
-                  className="bg-white dark:bg-slate-700 text-black dark:text-white border border-gray-200 dark:border-slate-600 shadow-sm hover:shadow-md px-6 py-1 rounded-full font-bold transition-all"
+                  className="bg-white dark:bg-slate-700 text-black dark:text-white border border-gray-200 dark:border-slate-600 shadow-sm hover:shadow-md px-4 sm:px-6 py-1 rounded-full font-bold transition-all text-sm"
                 >
                   Sign in
                 </Link>
               )}
               <button
                 onClick={() => dispatch(toggleDarkMode())}
-                className="cursor-pointer text-black dark:text-white"
+                className="cursor-pointer text-black dark:text-white p-1"
                 title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
-                {isDarkMode ? <SunMedium size={30} /> : <Moon size={30} />}
+                {isDarkMode ? <SunMedium size={22} /> : <Moon size={22} />}
               </button>
             </>
           ) : (
             // LOGGED IN
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Avatar */}
               <Link
                 to="/profile"
                 onClick={handleNavigationGuard}
-                className="w-12 h-12 overflow-hidden shadow-all rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold"
+                className="w-9 h-9 sm:w-11 sm:h-11 overflow-hidden shadow-all rounded-full bg-black text-purple-secondary flex items-center justify-center font-semibold shrink-0"
               >
                 <img
                   src={user.avatar || "/user.png"}
@@ -129,8 +129,10 @@ function Navbar() {
                   className="h-full w-full object-cover"
                 />
               </Link>
-              <div className="flex flex-col gap-0 text-black dark:text-white">
-                <span className="font-medium">
+
+              {/* Name – hidden on xs screens */}
+              <div className="hidden sm:flex flex-col gap-0 text-black dark:text-white">
+                <span className="font-medium text-sm leading-tight">
                   {user.firstName || user.lastName
                     ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
                     : "N/A"}
@@ -141,11 +143,11 @@ function Navbar() {
               {/* Notification */}
               <div
                 onClick={() => dispatch(toggleNotificationModal())}
-                className="relative cursor-pointer flex items-center justify-center"
+                className="relative cursor-pointer flex items-center justify-center p-1"
               >
-                <Bell className="text-black dark:text-white" />
+                <Bell size={20} className="text-black dark:text-white" />
                 {unreadCount > 0 && (
-                  <div className="absolute bottom-[60%] right-0 bg-red-500 size-4 rounded-full flex justify-center items-center text-xs text-white font-semibold">
+                  <div className="absolute -top-1 -right-1 bg-red-500 min-w-[16px] h-4 rounded-full flex justify-center items-center text-[10px] text-white font-semibold px-0.5">
                     {unreadCount}
                   </div>
                 )}
@@ -155,16 +157,17 @@ function Navbar() {
               {/* Theme toggle */}
               <button
                 onClick={() => dispatch(toggleDarkMode())}
-                className="cursor-pointer text-black dark:text-white"
+                className="cursor-pointer text-black dark:text-white p-1"
                 title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
-                {isDarkMode ? <SunMedium size={30} /> : <Moon size={30} />}
+                {isDarkMode ? <SunMedium size={20} /> : <Moon size={20} />}
               </button>
 
               {/* Logout */}
               <LogOut
+                size={20}
                 onClick={handleLogout}
-                className="cursor-pointer text-black dark:text-white"
+                className="cursor-pointer text-black dark:text-white p-0.5"
               />
             </div>
           )}

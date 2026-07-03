@@ -52,7 +52,7 @@ function GameRequests() {
   };
 
   return (
-    <div className="mx-14 my-2">
+    <div className="mx-4 sm:mx-8 md:mx-12 my-2">
       <h2 className="text-xl font-semibold mb-4 tracking-widest">
         Game Requests ({gameRequests.length})
       </h2>

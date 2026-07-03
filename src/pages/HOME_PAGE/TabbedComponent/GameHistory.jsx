@@ -20,7 +20,7 @@ function GameHistory() {
   }, []);
 
   return (
-    <div className="mx-14 py-4 space-y-3">
+    <div className="px-4 sm:px-8 md:px-12 py-4 space-y-3">
       <h3 className="text-lg font-semibold text-gray-800 dark:text-slate-200">Game history</h3>
       {history.length === 0 ? (
         <p className="text-sm text-gray-500 dark:text-slate-400">No completed games yet.</p>

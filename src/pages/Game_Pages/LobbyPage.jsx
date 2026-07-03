@@ -225,7 +225,7 @@ function LobbyPage() {
       : p.username?.slice(0, 2).toUpperCase();
 
   return (
-    <div className="flex-1 flex bg-gray-50 min-h-0 overflow-auto p-6 gap-5">
+    <div className="flex-1 flex flex-col md:flex-row bg-gray-50 min-h-0 overflow-auto p-3 sm:p-4 md:p-6 gap-4 md:gap-5">
       {/* ─── LEFT: Players Panel ─── */}
       <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col overflow-hidden">
         {/* Panel header */}
@@ -343,7 +343,7 @@ function LobbyPage() {
       </div>
 
       {/* ─── RIGHT: Round Setup Panel ─── */}
-      <div className="w-80 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col">
+      <div className="w-full md:w-80 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col">
         {/* Panel header */}
         <div className="px-6 pt-5 pb-3 border-b border-gray-100">
           <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">

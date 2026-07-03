@@ -10,7 +10,7 @@ import { setCredentials } from "../authSlice";
 function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { mutate, isLoading } = useLogin();
+  const { mutate, isPending } = useLogin();
   // const { error } = useSelector((state) => state.auth); // Redux error (optional)
 
   // ✅ Use useState for server errors
@@ -41,7 +41,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-w-md mt-10 bg-white dark:bg-slate-800 self-start p-6 shadow-all rounded-xl text-black dark:text-slate-100">
+    <div className="w-full max-w-md mx-4 sm:mx-0 sm:min-w-md mt-8 sm:mt-10 bg-white dark:bg-slate-800 self-start p-6 shadow-all rounded-xl text-black dark:text-slate-100">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
         <h1 className="text-center text-2xl font-semibold mt-2 text-black dark:text-white">
           Sign in
@@ -64,7 +64,7 @@ function LoginForm() {
           cleanError={cleanError}
         />
 
-        <Button label={isLoading ? "Signing in..." : "Sign in"} type="submit" />
+        <Button label={isPending ? "Signing in..." : "Sign in"} isLoading={isPending} type="submit" />
 
         {serverError && <p className="text-red-500 text-xs">{serverError}</p>}
 
