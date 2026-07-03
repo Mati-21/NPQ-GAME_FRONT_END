@@ -107,13 +107,13 @@ function NotificationDetail() {
 
   return (
     <div className="min-h-screen bg-[#f5f6f7] dark:bg-slate-900 p-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full  mx-auto">
         {/* Header */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 mb-6">
           <div className="flex justify-between items-start mb-2">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                Alert & Notifications
+                Notifications
               </h1>
               <p className="text-sm text-gray-500 dark:text-slate-400">
                 Monitor and manage notifications

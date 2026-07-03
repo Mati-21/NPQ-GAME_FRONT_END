@@ -4,7 +4,7 @@ let socket = null;
 
 export const connectSocket = () => {
   if (!socket) {
-    socket = io("http://localhost:5000", {
+    socket = io("https://npq-game-back-end.onrender.com", {
       withCredentials: true, // 🔥 sends HttpOnly cookies
       transports: ["websocket"],
     });
