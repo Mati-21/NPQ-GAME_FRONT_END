@@ -7,7 +7,7 @@ import { registerSchema } from "../../../utils/RegistrationSchema";
 import { useRegister } from "../../../hooks/useRegister";
 
 function RegisterForm() {
-  const { mutate } = useRegister();
+  const { mutate, isLoading } = useRegister();
 
   const {
     register,
@@ -79,7 +79,7 @@ function RegisterForm() {
           />
         </div>
 
-        <Button label="Sign up" type="submit" />
+        <Button label={isLoading ? "Signing up..." : "Sign up"} type="submit" />
 
         <p className="text-center dark:text-slate-300">
           Already have an account?{" "}
