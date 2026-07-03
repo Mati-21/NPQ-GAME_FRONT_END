@@ -16,16 +16,16 @@ const Input = forwardRef(
   ) => {
     return (
       <div className="w-full flex flex-col gap-1">
-        <label className="text-black font-semibold">{label}</label>
+        <label className="text-black dark:text-slate-200 font-semibold">{label}</label>
         <input
           ref={ref}
           type={type}
           placeholder={placeholder}
-          className={`${border} rounded px-3 py-2 bg-transparent outline-none ${placeholderColor} text-black placeholder:text-xs placeholder:text-gray-300`}
+          className={`${border} dark:border-slate-600 rounded px-3 py-2 bg-transparent dark:bg-slate-700 outline-none ${placeholderColor} text-black dark:text-slate-100 placeholder:text-xs placeholder:text-gray-300 dark:placeholder:text-slate-500`}
           {...rest}
           onChange={(e) => {
-            cleanError?.(); // 🔥 clears redux error
-            rest.onChange?.(e); // keeps RHF working
+            cleanError?.();
+            rest.onChange?.(e);
           }}
         />
         {error && <p className="text-red-500 text-sm">{error}</p>}

@@ -41,9 +41,9 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-w-md mt-10 bg-white self-start p-6 shadow-all rounded-xl text-black">
+    <div className="min-w-md mt-10 bg-white dark:bg-slate-800 self-start p-6 shadow-all rounded-xl text-black dark:text-slate-100">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-        <h1 className="text-center text-2xl font-semibold mt-2 text-black">
+        <h1 className="text-center text-2xl font-semibold mt-2 text-black dark:text-white">
           Sign in
         </h1>
 
@@ -68,7 +68,7 @@ function LoginForm() {
 
         {serverError && <p className="text-red-500 text-xs">{serverError}</p>}
 
-        <p className="text-center">
+        <p className="text-center dark:text-slate-300">
           Don’t have an account?{" "}
           <Link to="/register" className="text-purple-500 font-bold">
             Join us

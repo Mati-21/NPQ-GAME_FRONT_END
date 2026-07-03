@@ -24,20 +24,28 @@ function RegisterForm() {
   };
 
   return (
-    <div className="min-w-md mt-10 bg-white self-start p-6 shadow-all rounded-xl">
+    <div className="min-w-md mt-10 bg-white dark:bg-slate-800 self-start p-6 shadow-all rounded-xl">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
-        <h1 className="text-center text-2xl font-bold mt-2 font-inter tracking-widest">
+        <h1 className="text-center text-2xl font-bold mt-2 font-inter tracking-widest dark:text-white">
           Register
         </h1>
 
         {/* inputs */}
 
-        <Input
-          label="Name:"
-          placeholder="Please Insert Your Name"
-          {...register("name")}
-          error={errors.name?.message}
-        />
+        <div className="flex gap-2">
+          <Input
+            label="First Name:"
+            placeholder="First name"
+            {...register("firstName")}
+            error={errors.firstName?.message}
+          />
+          <Input
+            label="Last Name:"
+            placeholder="Last name"
+            {...register("lastName")}
+            error={errors.lastName?.message}
+          />
+        </div>
 
         <Input
           label="Email:"
@@ -73,7 +81,7 @@ function RegisterForm() {
 
         <Button label="Sign up" type="submit" />
 
-        <p className="text-center">
+        <p className="text-center dark:text-slate-300">
           Already have an account?{" "}
           <Link to="/login" className="text-purple-500 font-bold">
             Login

@@ -23,29 +23,55 @@ function GameSessionPage() {
   const socket = getSocket() || connectSocket();
   const {
     gameId,
-    opponent,
-    isHost,
-    secretNumber,
+    opponent: initOpponent,
+    isHost: initIsHost,
+    secretNumber: initSecretNumber,
     initCurrentTurn,
     initPhase,
     initGuessingTimer,
     initResponseTimer,
+    viewOnly,
+    historyGame,
   } = location.state || {};
 
+  const isHost = viewOnly ? (historyGame?.hostId === currentUser?._id) : initIsHost;
+  const opponent = viewOnly ? historyGame?.players?.find(p => String(p._id) !== String(currentUser?._id)) : initOpponent;
+  const secretNumber = viewOnly 
+    ? (isHost ? historyGame?.hostSecretNumber : historyGame?.guestSecretNumber)
+    : initSecretNumber;
+
   // ── Game state ──
-  const [gameState, setGameState] = useState({
-    winnerId: null,
-    loserId: null,
-    reason: null,
-    pointsAwarded: 0,
-    // Seed from server's game-session-started payload forwarded via navigate state
-    currentTurn: initCurrentTurn || null,
-    phase: initPhase || "guess",
-    latestResponse: null,
-    guesses: [],
-    responses: [],
-    guessingTimer: initGuessingTimer || 3,
-    responseTimer: initResponseTimer || 3,
+  const [gameState, setGameState] = useState(() => {
+    if (viewOnly && historyGame) {
+      return {
+        winnerId: historyGame.winner,
+        loserId: historyGame.loser,
+        reason: historyGame.reason,
+        pointsAwarded: historyGame.pointsAwarded,
+        currentTurn: null,
+        phase: "finished",
+        guesses: historyGame.guesses || [],
+        responses: historyGame.responses || [],
+        guessingTimer: historyGame.guessingTimer || 3,
+        responseTimer: historyGame.responseTimer || 3,
+        autoCheck: historyGame.autoCheck || false,
+        isDraw: historyGame.isDraw || false,
+      };
+    }
+    return {
+      winnerId: null,
+      loserId: null,
+      reason: null,
+      pointsAwarded: 0,
+      currentTurn: initCurrentTurn || null,
+      phase: initPhase || "guess",
+      latestResponse: null,
+      guesses: [],
+      responses: [],
+      guessingTimer: initGuessingTimer || 3,
+      responseTimer: initResponseTimer || 3,
+      isDraw: false,
+    };
   });
 
   // ── Active countdown in seconds ──
@@ -106,30 +132,34 @@ function GameSessionPage() {
 
   // ── Register secret number on mount so server can check win ──
   useEffect(() => {
+    if (viewOnly) return;
     if (!socket || !gameId || !currentUser?._id || !secretNumber) return;
     socket.emit("register-secret", {
       gameId,
       playerId: currentUser._id,
       secretNumber,
     });
-  }, [socket, gameId, currentUser?._id, secretNumber]);
+  }, [socket, gameId, currentUser?._id, secretNumber, viewOnly]);
 
   // ── Persist active game id ──
   useEffect(() => {
+    if (viewOnly) return;
     if (gameId) sessionStorage.setItem("activeGameId", gameId);
     return () => {
       if (sessionStorage.getItem("activeGameId") === gameId)
         sessionStorage.removeItem("activeGameId");
     };
-  }, [gameId]);
+  }, [gameId, viewOnly]);
 
   useEffect(() => {
+    if (viewOnly) return;
     if (gameState?.winnerId || gameState?.loserId)
       sessionStorage.removeItem("activeGameId");
-  }, [gameState?.winnerId, gameState?.loserId]);
+  }, [gameState?.winnerId, gameState?.loserId, viewOnly]);
 
   // ── Socket listeners ──
   useEffect(() => {
+    if (viewOnly) return;
     if (!socket || !gameId) return;
 
     const handleGameResult = (payload) => {
@@ -174,11 +204,15 @@ function GameSessionPage() {
       socket.off("turn-updated", handleTurnUpdated);
       socket.off("resign-ack", handleResignAck);
     };
-  }, [socket, gameId, currentUser?._id, navigate]);
+  }, [socket, gameId, currentUser?._id, navigate, viewOnly]);
 
   const handleLeaveAttempt = () => {
-    if (gameState?.winnerId || gameState?.loserId) {
-      navigate("/home");
+    if (viewOnly || gameState?.winnerId || gameState?.loserId) {
+      if (viewOnly) {
+        navigate("/home", { state: { activeTab: "Game_History" } });
+      } else {
+        navigate("/home");
+      }
       return;
     }
     toast.error("Resign the game first if you want to leave this session.");
@@ -186,6 +220,16 @@ function GameSessionPage() {
 
   // ── Timer badge content ──
   const timerBadge = () => {
+    if (viewOnly) {
+      if (gameState.isDraw) return "Result · Draw";
+      const wId = String(historyGame?.winner?._id || historyGame?.winner || "");
+      const winnerName = wId === String(currentUser?._id) 
+        ? "You Won" 
+        : historyGame?.winner?.username 
+          ? `${historyGame.winner.username} Won` 
+          : "Opponent Won";
+      return `Result · ${winnerName}`;
+    }
     if (!gameState.currentTurn) return "Starting...";
     if (isMyTurn) {
       const label = gameState.phase === "guess" ? "Your Guess" : "Your Response";
@@ -249,6 +293,7 @@ function GameSessionPage() {
             currentUser={currentUser}
             gameState={gameState}
             secretNumber={secretNumber}
+            viewOnly={viewOnly}
           />
         </div>
 
@@ -263,6 +308,7 @@ function GameSessionPage() {
             guesses={gameState.guesses}
             responses={gameState.responses}
             latestResponse={gameState.latestResponse}
+            viewOnly={viewOnly}
           />
         </div>
 
@@ -277,12 +323,13 @@ function GameSessionPage() {
             guesses={gameState.guesses}
             responses={gameState.responses}
             latestResponse={gameState.latestResponse}
+            viewOnly={viewOnly}
           />
         </div>
 
         {/* Chat Panel */}
         <div className="w-80 shrink-0 flex flex-col">
-          <ChatComponent />
+          <ChatComponent gameId={gameId} viewOnly={viewOnly} historyChat={historyGame?.chat} />
         </div>
       </div>
     </div>

@@ -16,14 +16,27 @@ function HostUser({
   gameState,
   guesses = [],
   responses = [],
+  viewOnly = false,
 }) {
   const [guess, setGuess] = useState("");
   const socket = getSocket() || connectSocket();
 
   const myId = String(currentUser?._id || "");
   const isMyGuessTurn =
+    !viewOnly &&
     gameState?.phase === "guess" &&
     String(gameState?.currentTurn || "") === myId;
+
+  const handleGuessChange = (val) => {
+    const digits = val.replace(/\D/g, "");
+    let unique = "";
+    for (let char of digits) {
+      if (!unique.includes(char)) {
+        unique += char;
+      }
+    }
+    setGuess(unique.slice(0, 4));
+  };
 
   const handleSubmit = () => {
     if (!gameId || !myId || !guess.trim()) return;
@@ -37,6 +50,10 @@ function HostUser({
     }
     if (!isMyGuessTurn) {
       toast.error("Wait for your turn to guess.");
+      return;
+    }
+    if (guess.length !== 4) {
+      toast.error("Guess must be exactly 4 unique digits.");
       return;
     }
     socket.emit("submit-guess", {
@@ -146,9 +163,9 @@ function HostUser({
             <div className="flex-1 relative flex items-center">
               <span className="absolute left-3 text-gray-400 text-xs font-bold">@</span>
               <input
-                type="number"
+                type="text"
                 value={guess}
-                onChange={(e) => setGuess(e.target.value)}
+                onChange={(e) => handleGuessChange(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter your guess"
                 className="w-full bg-white border border-gray-200 rounded-xl pl-8 pr-4 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/Auth/authSlice.js";
 import UI_Slice from "../features/UI_Slice/UI_Slice.js";
+import notificationReducer from "../features/Notification/notificationSlice.js";
 
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // localStorage
@@ -18,6 +19,7 @@ const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     UI_Slice,
+    notification: notificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

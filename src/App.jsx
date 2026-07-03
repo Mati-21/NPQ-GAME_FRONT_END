@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -18,12 +18,14 @@ import Profile from "./pages/HOME_PAGE/Profile/Profile.jsx";
 import LobbyPage from "./pages/Game_Pages/LobbyPage.jsx";
 import GameSessionPage from "./pages/Game_Pages/GameSessionPage.jsx";
 import ResignConfirmationPage from "./pages/Game_Pages/ResignConfirmationPage.jsx";
+import NotificationDetail from "./pages/NotificationDetail/NotificationDetail.jsx";
+import NotificationsList from "./pages/NotificationsList/NotificationsList.jsx";
 import { Toaster } from "react-hot-toast";
 
-function App() {
+function AppContent() {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { isQuitGameModalOpen } = useSelector((state) => state.UI_Slice);
-  // console.log(isAuthenticated);
+  const { isQuitGameModalOpen, isDarkMode } = useSelector((state) => state.UI_Slice);
+  const location = useLocation();
 
   const dispatch = useDispatch();
 
@@ -55,6 +57,15 @@ function App() {
     }
   }, [isAuthenticated]);
 
+  // Sync dark mode class on <html>
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -64,12 +75,11 @@ function App() {
   }
 
   return (
-    <div className="h-screen bg-twitter-white flex overflow-x-hidden scrollbar-custom flex-col">
+    <div className="h-screen bg-[#f5f6f7] dark:bg-slate-900 flex overflow-x-hidden scrollbar-custom flex-col transition-colors duration-300">
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-      <BrowserRouter>
-        <Navbar />
-        {isQuitGameModalOpen && <ResignConfirmationPage />}
-        <Routes>
+      <Navbar />
+      {isQuitGameModalOpen && <ResignConfirmationPage />}
+      <Routes>
           {/* Public routes */}
           <Route
             path="/"
@@ -130,12 +140,35 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/notification/:notificationId"
+            element={
+              <ProtectedRoute>
+                <NotificationDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <NotificationsList />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Catch all */}
           <Route path="*" element={<Notfound />} />
         </Routes>
-      </BrowserRouter>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

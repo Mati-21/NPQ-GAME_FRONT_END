@@ -9,10 +9,12 @@ function GameDashboard({
   currentUser,
   gameState,
   secretNumber,
+  viewOnly = false,
 }) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(viewOnly);
   const socket = getSocket();
   const [resigning, setResigning] = useState(false);
+  const [showConfirmResign, setShowConfirmResign] = useState(false);
 
   const myId = String(currentUser?._id || "");
   const opponentId = String(opponent?._id || "");
@@ -38,6 +40,7 @@ function GameDashboard({
     setResigning(true);
     s.emit("resign-game", { gameId, playerId: currentUser._id }, (ack) => {
       setResigning(false);
+      setShowConfirmResign(false);
       if (!ack) return;
       if (!ack.success) {
         console.error("Resign failed:", ack.message);
@@ -109,16 +112,49 @@ function GameDashboard({
       </div>
 
       {/* Resign Button */}
-      <div className="p-5 border-t border-gray-100 bg-gray-50">
-        <button
-          onClick={handleResign}
-          disabled={resigning || Boolean(gameState?.winnerId)}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Flag size={14} />
-          {resigning ? "Resigning…" : "Resign Game"}
-        </button>
-      </div>
+      {!viewOnly && (
+        <div className="p-5 border-t border-gray-100 bg-gray-50">
+          <button
+            onClick={() => setShowConfirmResign(true)}
+            disabled={resigning || Boolean(gameState?.winnerId)}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Flag size={14} />
+            {resigning ? "Resigning…" : "Resign Game"}
+          </button>
+        </div>
+      )}
+
+      {/* Confirmation Modal Overlay */}
+      {showConfirmResign && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-gray-100 flex flex-col gap-4 animate-in zoom-in-95 duration-200">
+            <div>
+              <h3 className="text-base font-bold text-gray-900 mb-1">
+                Resign Game?
+              </h3>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Are you sure you want to resign? You will immediately lose this round and forfeit points.
+              </p>
+            </div>
+            <div className="flex gap-3 mt-2">
+              <button
+                onClick={() => setShowConfirmResign(false)}
+                className="flex-1 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResign}
+                disabled={resigning}
+                className="flex-1 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition cursor-pointer disabled:opacity-50"
+              >
+                {resigning ? "Resigning..." : "Yes, Resign"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

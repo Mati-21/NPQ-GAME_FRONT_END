@@ -11,7 +11,7 @@ import { useState } from "react";
 import ListofFriends from "./TabbedComponent/ListofFriends.jsx";
 import { useEffect } from "react";
 import { getSocket } from "../../utils/socket.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addFriend,
@@ -20,10 +20,14 @@ import {
   removeSentRequest,
   removeReceivedRequest,
 } from "../../features/Auth/authSlice.js";
-import { setOnlineUsers, addGameRequest } from "../../features/UI_Slice/UI_Slice.js";
+import { setOnlineUsers, addGameRequest, removeGameRequestsByUser } from "../../features/UI_Slice/UI_Slice.js";
+import { addOneNotification } from "../../features/Notification/notificationSlice.js";
 
 function Home() {
-  const [activeTabLocal, setActiveTabLocal] = useState("none");
+  const location = useLocation();
+  const [activeTabLocal, setActiveTabLocal] = useState(
+    location.state?.activeTab || "none"
+  );
   const user = useSelector((state) => state.auth.user);
   const socket = getSocket();
   const navigate = useNavigate();
@@ -86,6 +90,15 @@ function Home() {
     };
     socket.on("game-request-accepted", handleGameRequestAccepted);
 
+    // ❌ Opponent (host) left the lobby before guest accepted — remove their pending request
+    const handleOpponentLeftLobby = ({ wasHost, leavingUserId }) => {
+      if (wasHost) {
+        // The host (original sender) cancelled — clear their game request from our list
+        dispatch(removeGameRequestsByUser(leavingUserId));
+      }
+    };
+    socket.on("opponent-left-lobby", handleOpponentLeftLobby);
+
     return () => {
       socket.off("friend-request", handleFriendRequest);
       socket.off("new-friend", handleNewFriend);
@@ -95,19 +108,31 @@ function Home() {
       socket.off("reject-friend-request", handleRejectFriendRequest);
       socket.off("game-request", handleGameRequest);
       socket.off("game-request-accepted", handleGameRequestAccepted);
+      socket.off("opponent-left-lobby", handleOpponentLeftLobby);
     };
   }, [socket, dispatch]);
 
   useEffect(() => {
     const handleNotification = (notification) => {
-      console.log(notification);
+      console.log("Real-time notification received:", notification);
+      dispatch(addOneNotification(notification));
     };
 
     socket.on("new-notification", handleNotification);
-  }, [socket]);
+
+    return () => {
+      socket.off("new-notification", handleNotification);
+    };
+  }, [socket, dispatch]);
+
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTabLocal(location.state.activeTab);
+    }
+  }, [location.state]);
 
   return (
-    <div className="flex-1 bg-white-background pb-4 overflow-y-auto flex flex-col">
+    <div className="flex-1 bg-[#f5f6f7] dark:bg-slate-900 pb-4 overflow-y-auto flex flex-col transition-colors duration-300">
       {/* Header Navigation */}
       <TopNavigation setActiveTabLocal={setActiveTabLocal} />
 

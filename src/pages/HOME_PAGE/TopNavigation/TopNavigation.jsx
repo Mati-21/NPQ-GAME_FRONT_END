@@ -18,36 +18,36 @@ function TopNavigation({ setActiveTabLocal }) {
   };
 
   return (
-    <div className="relative w-full flex justify-between items-center 0  px-14 py-4  gap-4 mt-6">
+    <div className="relative w-full flex justify-between items-center px-14 py-4 gap-4 mt-6">
       {/* Tapped Components */}
       <div className="flex gap-4">
         <div
           onClick={() => handleTabClick("List_of_Friends")}
-          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100"
+          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors"
         >
           List of Friends
         </div>
         <div
           onClick={() => handleTabClick("Game_Requests")}
-          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 duration-500"
+          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors duration-500"
         >
           Game Requests
         </div>
         <div
           onClick={() => handleTabClick("Game_History")}
-          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100"
+          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors"
         >
           Game History
         </div>
         <div
           onClick={() => handleTabClick("Online_Users")}
-          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100"
+          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors"
         >
           Online Friends
         </div>
         <div
           onClick={() => handleTabClick("Friend_Request")}
-          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100"
+          className="px-4 py-2 shadow-all rounded-full cursor-pointer hover:bg-purple-100 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600 transition-colors"
         >
           Friend Request
         </div>

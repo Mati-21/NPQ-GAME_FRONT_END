@@ -6,7 +6,8 @@ const initialState = {
   NotificationModal: false,
   isEditProfileOpen: false,
   isQuitGameModalOpen: false,
-  gameRequests: [], // incoming game requests
+  gameRequests: [],
+  isDarkMode: false,
 };
 
 
@@ -65,6 +66,18 @@ const UI_Slice = createSlice({
         (r) => r.requestId !== action.payload
       );
     },
+    // Removes all pending requests from a specific user (e.g. when host cancels lobby)
+    removeGameRequestsByUser: (state, action) => {
+      state.gameRequests = state.gameRequests.filter(
+        (r) => String(r.fromUser?._id) !== String(action.payload)
+      );
+    },
+    toggleDarkMode: (state) => {
+      state.isDarkMode = !state.isDarkMode;
+    },
+    setDarkMode: (state, action) => {
+      state.isDarkMode = action.payload;
+    },
   },
 });
 
@@ -83,6 +96,9 @@ export const {
   closeQuitModal,
   addGameRequest,
   removeGameRequest,
+  removeGameRequestsByUser,
+  toggleDarkMode,
+  setDarkMode,
 } = UI_Slice.actions;
 
 export default UI_Slice.reducer;

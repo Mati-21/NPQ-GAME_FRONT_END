@@ -1,10 +1,25 @@
 import { Send } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { getSocket } from "../../utils/socket";
+import { useSelector } from "react-redux";
 
-function ChatComponent() {
-  const [messages, setMessages] = useState([]); // Start empty — no mock data
+function ChatComponent({ gameId, viewOnly = false, historyChat = [] }) {
+  const [messages, setMessages] = useState([]);
   const [inputVal, setInputVal] = useState("");
   const listRef = useRef(null);
+  const socket = getSocket();
+  const currentUser = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (viewOnly && historyChat && currentUser?._id) {
+      setMessages(
+        historyChat.map((c) => ({
+          tag: String(c.senderId) === String(currentUser._id) ? "Sender" : "Accepter",
+          message: c.message,
+        }))
+      );
+    }
+  }, [viewOnly, historyChat, currentUser?._id]);
 
   useEffect(() => {
     if (listRef.current) {
@@ -12,9 +27,49 @@ function ChatComponent() {
     }
   }, [messages]);
 
+  // Listen for incoming chat messages from the opponent
+  useEffect(() => {
+    if (viewOnly) return;
+    if (!socket) return;
+
+    const handleIncomingMessage = (payload) => {
+      const senderIsMe = String(payload.senderId) === String(currentUser?._id);
+      setMessages((prev) => [
+        ...prev,
+        {
+          tag: senderIsMe ? "Sender" : "Accepter",
+          message: payload.message,
+        },
+      ]);
+    };
+
+    socket.on("chat-message", handleIncomingMessage);
+
+    return () => {
+      socket.off("chat-message", handleIncomingMessage);
+    };
+  }, [socket, currentUser?._id]);
+
   const handleSend = () => {
     if (!inputVal.trim()) return;
-    setMessages((prev) => [...prev, { tag: "Sender", message: inputVal.trim() }]);
+    if (!socket || !gameId) return;
+
+    const messageText = inputVal.trim();
+    
+    // Send to server
+    socket.emit("send-chat-message", {
+      gameId,
+      message: messageText,
+    });
+
+    // Add locally for self
+    setMessages((prev) => [
+      ...prev,
+      {
+        tag: "Sender",
+        message: messageText,
+      },
+    ]);
     setInputVal("");
   };
 
@@ -67,24 +122,26 @@ function ChatComponent() {
       </div>
 
       {/* Input Action Footer */}
-      <div className="p-5 border-t border-gray-100 bg-gray-50">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={inputVal}
-            onChange={(e) => setInputVal(e.target.value)}
-            onKeyDown={handleKeyPress}
-            placeholder="Message"
-            className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-          />
-          <button
-            onClick={handleSend}
-            className="w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition flex items-center justify-center shrink-0 shadow-sm cursor-pointer"
-          >
-            <Send size={15} />
-          </button>
+      {!viewOnly && (
+        <div className="p-5 border-t border-gray-100 bg-gray-50">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Message"
+              className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            />
+            <button
+              onClick={handleSend}
+              className="w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition flex items-center justify-center shrink-0 shadow-sm cursor-pointer"
+            >
+              <Send size={15} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

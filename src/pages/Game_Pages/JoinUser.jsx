@@ -16,6 +16,7 @@ function JoinUser({
   gameState,
   guesses = [],
   responses = [],
+  viewOnly = false,
 }) {
   const [place, setPlace] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -25,6 +26,7 @@ function JoinUser({
   const opponentId = String(opponent?._id || "");
 
   const isMyResponseTurn =
+    !viewOnly &&
     gameState?.phase === "response" &&
     String(gameState?.currentTurn || "") === myId;
 

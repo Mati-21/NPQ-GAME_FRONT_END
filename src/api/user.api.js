@@ -3,10 +3,11 @@ import axiosInstance from "../app/axios";
 // Registration API call
 
 export const registerUser = async (data) => {
-  const { name, email, username, password } = data;
+  const { firstName, lastName, email, username, password } = data;
 
   const res = await axiosInstance.post("/auth/register", {
-    name,
+    firstName,
+    lastName,
     email,
     username,
     password,

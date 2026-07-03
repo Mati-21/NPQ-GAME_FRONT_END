@@ -4,8 +4,11 @@
 @import "tailwindcss";
 @plugin "tailwind-scrollbar";
 
+/* Activate dark: variant via .dark class on <html> */
+@variant dark (&:where(.dark, .dark *));
+
 /* ===================== */
-/* Design tokens */
+/* Design tokens         */
 /* ===================== */
 :root {
   --color-purple-primary: #160087;
@@ -18,14 +21,21 @@
   --shadow-card: 0 5px 15px rgba(0, 0, 0, 0.1), 0 0 10px rgba(22, 0, 135, 0.2);
   --shadow-all: 0 0 15px 3px rgba(0, 0, 0, 0.1);
 
-  /* FIXED: Changed from transparent to actual colors */
-  --scroll-track: #f1f5f9; /* Light blue-gray */
-  --scroll-thumb: #007cf9; /* Your blue color */
-  --scroll-thumb-hover: #021c80; /* Dark blue */
+  --scroll-track: #f1f5f9;
+  --scroll-thumb: #007cf9;
+  --scroll-thumb-hover: #021c80;
+}
+
+/* Dark mode token overrides */
+.dark {
+  --scroll-track: #1e293b;
+  --scroll-thumb: #3b82f6;
+  --scroll-thumb-hover: #2563eb;
+  --shadow-all: 0 0 15px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* ===================== */
-/* Tailwind v4 theme */
+/* Tailwind v4 theme     */
 /* ===================== */
 @theme {
   --shadow-soft-purple: var(--shadow-soft-purple);
@@ -37,25 +47,18 @@
 }
 
 /* ===================== */
-/* Scrollbars - FIXED VERSION */
+/* Scrollbars            */
 /* ===================== */
-
 @layer utilities {
-  /* Remove html/body selectors - they might be conflicting */
-  /* Keep only .scrollbar-custom */
-
   .scrollbar-custom {
     overflow-y: auto;
-
-    /* Firefox */
     scrollbar-width: thin;
     scrollbar-color: var(--scroll-thumb) var(--scroll-track);
   }
 
-  /* Chrome / Edge / Safari - ONLY target .scrollbar-custom */
   .scrollbar-custom::-webkit-scrollbar {
-    width: 10px; /* Increased from 8px for better visibility */
-    height: 10px; /* For horizontal scrollbars */
+    width: 10px;
+    height: 10px;
   }
 
   .scrollbar-custom::-webkit-scrollbar-track {
