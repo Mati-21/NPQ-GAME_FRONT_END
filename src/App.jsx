@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Route, Routes, useLocation } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -164,12 +164,15 @@ function AppContent() {
   );
 }
 
+const router = createBrowserRouter([
+  {
+    path: "*",
+    element: <AppContent />
+  }
+]);
+
 function App() {
-  return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
