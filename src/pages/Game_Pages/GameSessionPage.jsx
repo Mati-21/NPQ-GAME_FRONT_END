@@ -175,8 +175,6 @@ function GameSessionPage() {
             : "You lost the round.";
         toast.error(reasonMsg);
       }
-
-      window.setTimeout(() => navigate("/home"), 2000);
     };
 
     const handleResignAck = (payload) => {

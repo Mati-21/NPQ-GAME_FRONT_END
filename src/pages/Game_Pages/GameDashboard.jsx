@@ -1,5 +1,6 @@
-import { Eye, EyeOff, ShieldAlert, Flag } from "lucide-react";
+import { Eye, EyeOff, ShieldAlert, Flag, Trophy, RotateCcw, Home } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getSocket, connectSocket } from "../../utils/socket";
 
 function GameDashboard({
@@ -11,6 +12,7 @@ function GameDashboard({
   secretNumber,
   viewOnly = false,
 }) {
+  const navigate = useNavigate();
   const [show, setShow] = useState(viewOnly);
   const socket = getSocket();
   const [resigning, setResigning] = useState(false);
@@ -48,6 +50,18 @@ function GameDashboard({
     });
   };
 
+  const handleRematch = () => {
+    navigate("/Game");
+  };
+
+  const handleLeaveGame = () => {
+    navigate("/home");
+  };
+
+  const isGameOver = Boolean(gameState?.winnerId || gameState?.loserId);
+  const isWinner = String(gameState?.winnerId) === myId;
+  const isDraw = gameState?.isDraw;
+
   return (
     <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between overflow-hidden">
       <div className="flex-1 flex flex-col gap-6 p-5">
@@ -66,25 +80,45 @@ function GameDashboard({
         </div>
 
         {/* Display Box */}
-        <div className="bg-gray-50 border border-gray-100 rounded-xl p-6 flex flex-col items-center justify-center gap-3">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-            Only visible to you
-          </span>
-          <div className="flex gap-2">
-            {show ? (
-              <span className="text-2xl font-bold tracking-widest text-gray-800">
-                {secretNumber || "—"}
+        {isGameOver ? (
+          <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6 flex flex-col items-center justify-center gap-3">
+            <div className="flex items-center gap-2">
+              <Trophy size={20} className="text-green-600" />
+              <span className="text-sm font-bold text-green-700 uppercase tracking-widest">
+                Winner
               </span>
-            ) : (
-              <div className="flex gap-3">
-                <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
-                <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
-                <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
-                <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
-              </div>
-            )}
+            </div>
+            <div className="text-center">
+              {isDraw ? (
+                <span className="text-lg font-bold text-gray-700">Draw</span>
+              ) : isWinner ? (
+                <span className="text-lg font-bold text-green-700">You Won!</span>
+              ) : (
+                <span className="text-lg font-bold text-gray-700">{opponent?.username || "Opponent"} Won</span>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-gray-50 border border-gray-100 rounded-xl p-6 flex flex-col items-center justify-center gap-3">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              Only visible to you
+            </span>
+            <div className="flex gap-2">
+              {show ? (
+                <span className="text-2xl font-bold tracking-widest text-gray-800">
+                  {secretNumber || "—"}
+                </span>
+              ) : (
+                <div className="flex gap-3">
+                  <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
+                  <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
+                  <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
+                  <span className="w-3 h-3 rounded-full bg-gray-400 animate-pulse" />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Stats — live from gameState */}
         <div className="flex flex-col gap-3">
@@ -111,17 +145,36 @@ function GameDashboard({
         </div>
       </div>
 
-      {/* Resign Button */}
+      {/* Resign Button / Game Over Buttons */}
       {!viewOnly && (
         <div className="p-5 border-t border-gray-100 bg-gray-50">
-          <button
-            onClick={() => setShowConfirmResign(true)}
-            disabled={resigning || Boolean(gameState?.winnerId)}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Flag size={14} />
-            {resigning ? "Resigning…" : "Resign Game"}
-          </button>
+          {isGameOver ? (
+            <div className="flex gap-2">
+              <button
+                onClick={handleRematch}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition shadow-sm cursor-pointer"
+              >
+                <RotateCcw size={14} />
+                Rematch
+              </button>
+              <button
+                onClick={handleLeaveGame}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-bold text-sm hover:bg-gray-100 transition cursor-pointer"
+              >
+                <Home size={14} />
+                Leave Game
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowConfirmResign(true)}
+              disabled={resigning}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Flag size={14} />
+              {resigning ? "Resigning…" : "Resign Game"}
+            </button>
+          )}
         </div>
       )}
 
