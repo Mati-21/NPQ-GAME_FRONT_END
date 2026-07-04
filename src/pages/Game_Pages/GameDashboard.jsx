@@ -51,7 +51,7 @@ function GameDashboard({
   };
 
   const handleRematch = () => {
-    navigate("/Game");
+    navigate("/lobby");
   };
 
   const handleLeaveGame = () => {
@@ -70,7 +70,7 @@ function GameDashboard({
 
   return (
     <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between overflow-hidden">
-      <div className="flex-1 flex flex-col gap-6 p-5">
+      <div className="flex-1 flex flex-col gap-6 p-5 overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-widest">
