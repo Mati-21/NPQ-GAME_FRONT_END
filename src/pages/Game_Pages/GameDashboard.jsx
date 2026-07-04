@@ -51,12 +51,7 @@ function GameDashboard({
   };
 
   const handleRematch = () => {
-    navigate("/lobby", {
-      state: {
-        opponent: opponent,
-        isHost: isHost,
-      },
-    });
+    navigate("/Game");
   };
 
   const handleLeaveGame = () => {
