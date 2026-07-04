@@ -36,9 +36,9 @@ function GameSessionPage() {
 
   const isHost = viewOnly ? (historyGame?.hostId === currentUser?._id) : initIsHost;
   const opponent = viewOnly ? historyGame?.players?.find(p => String(p._id) !== String(currentUser?._id)) : initOpponent;
-  const secretNumber = viewOnly 
+  const secretNumber = viewOnly
     ? (isHost ? historyGame?.hostSecretNumber : historyGame?.guestSecretNumber)
-    : initSecretNumber;
+    : (initIsHost ? initSecretNumber : "");
 
   // ── Game state ──
   const [gameState, setGameState] = useState(() => {
