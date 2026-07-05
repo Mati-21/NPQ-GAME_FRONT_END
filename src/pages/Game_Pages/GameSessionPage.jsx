@@ -1,7 +1,7 @@
 import { ArrowLeft, Swords, Clock } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ChatComponent from "./ChatComponent";
 import GameDashboard from "./GameDashboard";
 import HostUser from "./HostUser";
@@ -97,7 +97,7 @@ function GameSessionPage() {
       timerRef.current = null;
     }
 
-    if (!isMyTurn || !gameState.currentTurn || gameState.winnerId) {
+    if (!isMyTurn || !gameState.currentTurn || gameState.winnerId || gameState.isDraw) {
       setTimeLeft(null);
       return;
     }
@@ -128,7 +128,7 @@ function GameSessionPage() {
       if (timerRef.current) clearInterval(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameState.currentTurn, gameState.phase, isMyTurn, gameState.winnerId]);
+  }, [gameState.currentTurn, gameState.phase, isMyTurn, gameState.winnerId, gameState.isDraw]);
 
   // ── Register secret number on mount so server can check win ──
   useEffect(() => {
@@ -153,21 +153,37 @@ function GameSessionPage() {
 
   useEffect(() => {
     if (viewOnly) return;
-    if (gameState?.winnerId || gameState?.loserId)
+    if (gameState?.winnerId || gameState?.loserId || gameState?.isDraw)
       sessionStorage.removeItem("activeGameId");
-  }, [gameState?.winnerId, gameState?.loserId, viewOnly]);
+  }, [gameState?.winnerId, gameState?.loserId, gameState?.isDraw, viewOnly]);
 
-  // ── Socket listeners ──
-  useEffect(() => {
-    if (viewOnly) return;
-    if (!socket || !gameId) return;
+  // Holds the game-result payload until the final guess is confirmed in state
+  const pendingResultRef = useRef(null);
+  // Mirror of gameState so socket handlers can read latest guesses without stale closure
+  const gameStateRef = useRef(null);
 
-    const handleGameResult = (payload) => {
-      setGameState((prev) => ({ ...prev, ...payload }));
+  // Applies the stored game-result payload and shows the toast
+  const applyGameResult = useCallback(
+    (payload) => {
+      console.log("\n========== [CLIENT] GAME RESULT RECEIVED ==========");
+      console.log("Winner:", payload.winnerId, "| Loser:", payload.loserId, "| Draw:", payload.isDraw);
+      console.log("Total Guesses:", payload.totalGuesses, "| Total Responses:", payload.totalResponses);
+      console.log("[CLIENT] Guesses array:", JSON.stringify(payload.guesses, null, 2));
+      console.log("[CLIENT] Responses array:", JSON.stringify(payload.responses, null, 2));
+      console.log("====================================================\n");
+
+      setGameState((prev) => ({
+        ...prev,
+        ...payload,
+        guesses: payload.guesses?.length ? payload.guesses : prev.guesses,
+        responses: payload.responses?.length ? payload.responses : prev.responses,
+      }));
       sessionStorage.removeItem("activeGameId");
 
       if (payload.winnerId === currentUser?._id) {
         toast.success(`You won! +${payload.pointsAwarded} points`);
+      } else if (payload.isDraw) {
+        toast.success("The Game Endup Draw");
       } else if (payload.loserId === currentUser?._id) {
         const reasonMsg =
           payload.reason === "timeout"
@@ -175,6 +191,35 @@ function GameSessionPage() {
             : "You lost the round.";
         toast.error(reasonMsg);
       }
+    },
+    [currentUser?._id],
+  );
+
+  // ── Socket listeners ──
+  useEffect(() => {
+    if (viewOnly) return;
+    if (!socket || !gameId) return;
+
+    const handleGameResult = (payload) => {
+      pendingResultRef.current = payload;
+
+      // ── Normal path: turn-updated always arrives BEFORE game-result ──
+      // By the time game-result fires, gameStateRef already holds the
+      // final guesses from the preceding turn-updated. Check immediately.
+      const currentGuesses = gameStateRef.current?.guesses || [];
+      const expected = payload.totalGuesses || 0;
+
+      if (expected === 0 || currentGuesses.length >= expected) {
+        // State is already up to date — apply after React commits the last render
+        setTimeout(() => {
+          if (pendingResultRef.current) {
+            applyGameResult(pendingResultRef.current);
+            pendingResultRef.current = null;
+          }
+        }, 0);
+      }
+      // else: game-result arrived before turn-updated (rare)
+      // handleTurnUpdated will trigger applyGameResult when the count matches
     };
 
     const handleResignAck = (payload) => {
@@ -184,13 +229,37 @@ function GameSessionPage() {
     };
 
     const handleTurnUpdated = (payload) => {
-      setGameState((prev) => ({
-        ...prev,
-        ...payload,
-        // Always merge arrays properly
-        guesses: payload.guesses ?? prev.guesses,
-        responses: payload.responses ?? prev.responses,
-      }));
+      setGameState((prev) => {
+        const newGuesses = payload.guesses ?? prev.guesses;
+        const newResponses = payload.responses ?? prev.responses;
+        const newState = {
+          ...prev,
+          ...payload,
+          guesses: newGuesses,
+          responses: newResponses,
+        };
+
+        // Update the ref so handleGameResult can read the latest guesses
+        gameStateRef.current = newState;
+
+        // ── Fallback path: game-result arrived before turn-updated ──
+        // Apply the pending result now that the guesses are in state.
+        const pending = pendingResultRef.current;
+        if (
+          pending &&
+          pending.totalGuesses > 0 &&
+          newGuesses.length >= pending.totalGuesses
+        ) {
+          setTimeout(() => {
+            if (pendingResultRef.current) {
+              applyGameResult(pendingResultRef.current);
+              pendingResultRef.current = null;
+            }
+          }, 0);
+        }
+
+        return newState;
+      });
     };
 
     socket.on("game-result", handleGameResult);
@@ -202,10 +271,10 @@ function GameSessionPage() {
       socket.off("turn-updated", handleTurnUpdated);
       socket.off("resign-ack", handleResignAck);
     };
-  }, [socket, gameId, currentUser?._id, navigate, viewOnly]);
+  }, [socket, gameId, currentUser?._id, navigate, viewOnly, applyGameResult]);
 
   const handleLeaveAttempt = () => {
-    if (viewOnly || gameState?.winnerId || gameState?.loserId) {
+    if (viewOnly || gameState?.winnerId || gameState?.loserId || gameState?.isDraw) {
       if (viewOnly) {
         navigate("/home", { state: { activeTab: "Game_History" } });
       } else {
@@ -228,6 +297,7 @@ function GameSessionPage() {
           : "Opponent Won";
       return `Result · ${winnerName}`;
     }
+    if (gameState.isDraw) return "Result · Draw";
     if (!gameState.currentTurn) return "Starting...";
     if (isMyTurn) {
       const label = gameState.phase === "guess" ? "Your Guess" : "Your Response";
@@ -239,6 +309,17 @@ function GameSessionPage() {
   };
 
   const isActiveTimer = isMyTurn && timeLeft !== null && timeLeft > 0;
+
+  const myId = String(currentUser?._id || "");
+  const opponentId = String(opponent?._id || "");
+  const allGuesses = gameState.guesses || [];
+  const allResponses = gameState.responses || [];
+
+  // Pre-split so each block receives exactly its own data — no filtering bugs in children
+  const myGuesses = allGuesses.filter((g) => String(g.playerId) === myId);
+  const opponentGuesses = allGuesses.filter((g) => String(g.playerId) === opponentId);
+  const responsesForMe = allResponses.filter((r) => String(r.forPlayerId) === myId);
+  const responsesForOpponent = allResponses.filter((r) => String(r.forPlayerId) === opponentId);
 
   return (
     <div className="flex-1 flex flex-col bg-gray-50 min-h-0 overflow-auto">
@@ -303,8 +384,8 @@ function GameSessionPage() {
             gameId={gameId}
             isHost={isHost}
             gameState={gameState}
-            guesses={gameState.guesses}
-            responses={gameState.responses}
+            guesses={myGuesses}
+            responses={responsesForMe}
             latestResponse={gameState.latestResponse}
             viewOnly={viewOnly}
           />
@@ -318,8 +399,8 @@ function GameSessionPage() {
             gameId={gameId}
             isHost={isHost}
             gameState={gameState}
-            guesses={gameState.guesses}
-            responses={gameState.responses}
+            guesses={opponentGuesses}
+            responses={responsesForOpponent}
             latestResponse={gameState.latestResponse}
             viewOnly={viewOnly}
           />

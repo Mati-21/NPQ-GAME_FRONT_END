@@ -38,29 +38,29 @@ function GameDashboard({
   const handleResign = () => {
     if (!gameId || !currentUser?._id) return;
     const s = socket || connectSocket();
-    if (!s) return;
-    setResigning(true);
-    s.emit("resign-game", { gameId, playerId: currentUser._id }, (ack) => {
-      setResigning(false);
-      setShowConfirmResign(false);
-      if (!ack) return;
-      if (!ack.success) {
-        console.error("Resign failed:", ack.message);
-      }
-    });
+    if (s) {
+      s.emit("resign-game", { gameId, playerId: currentUser._id });
+    }
+    sessionStorage.removeItem("activeGameId");
+    navigate("/home");
   };
 
   const handleRematch = () => {
-    navigate("/lobby");
+    navigate("/lobby", {
+      state: {
+        opponent,
+        isHost,
+      },
+    });
   };
 
   const handleLeaveGame = () => {
     navigate("/home");
   };
 
-  const isGameOver = Boolean(gameState?.winnerId || gameState?.loserId);
-  const isWinner = String(gameState?.winnerId) === myId;
   const isDraw = gameState?.isDraw;
+  const isGameOver = Boolean(gameState?.winnerId || gameState?.loserId || isDraw);
+  const isWinner = String(gameState?.winnerId) === myId;
 
   // Get last guess and response for display
   const lastGuess = guesses.length > 0 ? guesses[guesses.length - 1] : null;
@@ -69,7 +69,7 @@ function GameDashboard({
     : null;
 
   return (
-    <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between overflow-hidden">
+    <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
       <div className="flex-1 flex flex-col gap-6 p-5 overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -87,40 +87,34 @@ function GameDashboard({
 
         {/* Display Box */}
         {isGameOver ? (
-          <div className={`${isWinner ? "bg-green-50 border-2 border-green-200" : "bg-red-50 border-2 border-red-200"} rounded-xl p-6 flex flex-col items-center justify-center gap-3`}>
+          <div className={`${isDraw ? "bg-amber-50 border-2 border-amber-200" : isWinner ? "bg-green-50 border-2 border-green-200" : "bg-red-50 border-2 border-red-200"} rounded-xl p-6 flex flex-col items-center justify-center gap-3`}>
             <div className="flex items-center gap-2">
-              <Trophy size={20} className={isWinner ? "text-green-600" : "text-red-600"} />
-              <span className={`text-sm font-bold uppercase tracking-widest ${isWinner ? "text-green-700" : "text-red-700"}`}>
-                {isDraw ? "Result" : isWinner ? "Winner" : "Loser"}
+              <Trophy size={20} className={isDraw ? "text-amber-600" : isWinner ? "text-green-600" : "text-red-600"} />
+              <span className={`text-sm font-bold uppercase tracking-widest ${isDraw ? "text-amber-700" : isWinner ? "text-green-700" : "text-red-700"}`}>
+                {isDraw ? "Draw" : isWinner ? "Winner" : "Loser"}
               </span>
             </div>
             <div className="text-center">
               {isDraw ? (
-                <span className="text-lg font-bold text-gray-700">Draw</span>
+                <span className="text-lg font-bold text-amber-700">The Game Endup Draw</span>
               ) : isWinner ? (
                 <span className="text-lg font-bold text-green-700">Congratulations you won the game!</span>
               ) : (
                 <span className="text-lg font-bold text-red-700">You Lost! Try harder next time</span>
               )}
             </div>
-            {lastGuess && lastResponse && (
-              <div className="mt-2 text-center">
-                <p className="text-xs text-gray-500 mb-1">Last Guess</p>
-                <div className="flex items-center gap-4 justify-center">
-                  <span className="text-xl font-bold text-gray-800">{lastGuess.guess}</span>
-                  <div className="flex gap-3">
-                    <div>
-                      <span className="text-xs text-gray-500 block">Place</span>
-                      <span className={`text-lg font-bold ${isWinner ? "text-green-600" : "text-gray-700"}`}>{lastResponse.place}</span>
-                    </div>
-                    <div>
-                      <span className="text-xs text-gray-500 block">Qty</span>
-                      <span className={`text-lg font-bold ${isWinner ? "text-green-600" : "text-gray-700"}`}>{lastResponse.qty}</span>
-                    </div>
-                  </div>
+            <div className="mt-2 text-center">
+              <div className="flex gap-4 justify-center text-sm">
+                <div>
+                  <span className="text-xs text-gray-500 block">Total Guesses</span>
+                  <span className={`font-bold ${isDraw ? "text-amber-700" : isWinner ? "text-green-700" : "text-red-700"}`}>{gameState?.totalGuesses || guesses.length}</span>
+                </div>
+                <div>
+                  <span className="text-xs text-gray-500 block">Total Responses</span>
+                  <span className={`font-bold ${isDraw ? "text-amber-700" : isWinner ? "text-green-700" : "text-red-700"}`}>{gameState?.totalResponses || responses.length}</span>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         ) : (
           <div className="bg-gray-50 border border-gray-100 rounded-xl p-6 flex flex-col items-center justify-center gap-3">

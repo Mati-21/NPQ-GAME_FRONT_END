@@ -30,13 +30,12 @@ function JoinUser({
     gameState?.phase === "response" &&
     String(gameState?.currentTurn || "") === myId;
 
-  // The latest guess made by the opponent (the one I need to respond to)
-  const opponentGuesses = guesses.filter((g) => String(g.playerId) === opponentId);
-  const latestOpponentGuess = opponentGuesses[opponentGuesses.length - 1]?.guess || "";
+  // guesses is already pre-filtered to opponent's guesses by GameSessionPage
+  const latestOpponentGuess = guesses[guesses.length - 1]?.guess || "";
 
   const handleSubmit = () => {
     if (!gameId || !myId) return;
-    if (gameState?.winnerId) return;
+    if (gameState?.winnerId || gameState?.isDraw) return;
     if (!isMyResponseTurn) {
       toast.error("It's not your turn to respond.");
       return;
@@ -61,15 +60,15 @@ function JoinUser({
     if (e.key === "Enter") handleSubmit();
   };
 
-  // ── Build opponent's guess table: their guesses + my responses ──
-  const guessRows = opponentGuesses.map((entry) => {
-    // I responded to their guess — responderId === myId, forPlayerId === opponentId
-    const matchingResponse = responses.find(
-      (r) =>
-        String(r.responderId) === myId &&
-        r.forPlayerId === opponentId &&
-        r.guess === entry.guess
-    );
+  // guesses and responses are already pre-filtered for the opponent by GameSessionPage
+  const guessRows = guesses.map((entry, idx) => {
+    const matchingResponse =
+      responses.find(
+        (r) => r.guess === entry.guess && Number(r.round) === Number(entry.round)
+      ) ||
+      responses.find((r) => r.guess === entry.guess) ||
+      responses[idx];
+
     return {
       guess: entry.guess,
       place: matchingResponse?.place ?? "",
@@ -77,7 +76,7 @@ function JoinUser({
     };
   });
 
-  const isGameOver = Boolean(gameState?.winnerId || gameState?.loserId);
+  const isGameOver = Boolean(gameState?.winnerId || gameState?.loserId || gameState?.isDraw);
 
   return (
     <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between overflow-hidden">
@@ -93,7 +92,7 @@ function JoinUser({
         </div>
         <div className="flex flex-col items-end gap-1">
           <span className="text-xs font-semibold text-gray-400">
-            {opponentGuesses.length} guess{opponentGuesses.length !== 1 ? "es" : ""}
+            {guesses.length} guess{guesses.length !== 1 ? "es" : ""}
           </span>
           {/* Turn indicator */}
           {!isGameOver && (

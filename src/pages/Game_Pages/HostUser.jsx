@@ -40,7 +40,7 @@ function HostUser({
 
   const handleSubmit = () => {
     if (!gameId || !myId || !guess.trim()) return;
-    if (gameState?.winnerId) {
+    if (gameState?.winnerId || gameState?.isDraw) {
       toast.error("The game already ended.");
       return;
     }
@@ -68,14 +68,15 @@ function HostUser({
     if (e.key === "Enter") handleSubmit();
   };
 
-  // ── Build guess table: only MY guesses, paired with the opponent's response ──
-  const myGuesses = guesses.filter((g) => String(g.playerId) === myId);
+  // guesses and responses are already pre-filtered for this player by GameSessionPage
+  const guessRows = guesses.map((entry, idx) => {
+    const matchingResponse =
+      responses.find(
+        (r) => r.guess === entry.guess && Number(r.round) === Number(entry.round)
+      ) ||
+      responses.find((r) => r.guess === entry.guess) ||
+      responses[idx];
 
-  const guessRows = myGuesses.map((entry) => {
-    // The opponent responded to my guess — forPlayerId === myId
-    const matchingResponse = responses.find(
-      (r) => r.forPlayerId === myId && r.guess === entry.guess
-    );
     return {
       guess: entry.guess,
       place: matchingResponse?.place ?? "",
@@ -83,7 +84,7 @@ function HostUser({
     };
   });
 
-  const isGameOver = Boolean(gameState?.winnerId || gameState?.loserId);
+  const isGameOver = Boolean(gameState?.winnerId || gameState?.loserId || gameState?.isDraw);
 
   return (
     <div className="flex-1 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between overflow-hidden">
@@ -99,7 +100,7 @@ function HostUser({
         </div>
         <div className="flex flex-col items-end gap-1">
           <span className="text-xs font-semibold text-gray-400">
-            {myGuesses.length} guess{myGuesses.length !== 1 ? "es" : ""}
+            {guesses.length} guess{guesses.length !== 1 ? "es" : ""}
           </span>
           {/* Turn indicator */}
           {!isGameOver && (
