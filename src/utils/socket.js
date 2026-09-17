@@ -4,9 +4,11 @@ let socket = null;
 
 export const connectSocket = () => {
   if (!socket) {
-    socket = io("https://npq-game-back-end.onrender.com", {
+    const SOCKET_URL =
+      import.meta.env.VITE_SOCKET_URL || "https://npq-game-back-end-vsa8.onrender.com";
+    socket = io(SOCKET_URL, {
       withCredentials: true, // 🔥 sends HttpOnly cookies
-      transports: ["websocket"],
+      transports: ["websocket", "polling"],
     });
 
     // Optional but VERY useful for debugging

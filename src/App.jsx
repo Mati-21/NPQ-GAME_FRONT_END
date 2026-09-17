@@ -32,8 +32,12 @@ function AppContent() {
   const { isLoading, data, error } = useQuery({
     queryKey: ["auth"],
     queryFn: checkAuth,
-    retry: false,
-    refetchInterval: 1000 * 60 * 10, // Refetch every hour
+    retry: (failureCount, err) => {
+      if (err?.response?.status === 401) return false;
+      return failureCount < 2;
+    },
+    retryDelay: 3000,
+    refetchInterval: 1000 * 60 * 10, // Refetch every 10 minutes
     refetchIntervalInBackground: true,
   });
 
